@@ -6,18 +6,17 @@
     <title>Actibilis | Копи-центр и цифровые услуги</title>
     <style>
         :root {
-            --bg-primary: #0a0a14;
-            --bg-secondary: #121220;
-            --accent-primary: #6d5acf;
-            --accent-secondary: #2a9d8f;
-            --accent-tertiary: #e76f51;
-            --text-primary: rgba(255, 255, 255, 0.95);
-            --text-secondary: rgba(255, 255, 255, 0.75);
-            --card-bg: rgba(25, 25, 40, 0.7);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            --perspective: 1000px;
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --accent-primary: #8a2be2;
+            --accent-secondary: #00ced1;
+            --accent-tertiary: #ff6b8b;
+            --text-primary: rgba(255, 255, 255, 0.92);
+            --text-secondary: rgba(255, 255, 255, 0.65);
+            --card-bg: rgba(30, 30, 46, 0.4);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -27,95 +26,146 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            perspective: var(--perspective);
-            transform-style: preserve-3d;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 90% 30%, rgba(0, 206, 209, 0.05) 0%, transparent 25%);
         }
 
-        /* Фоновые слои для глубины */
-        .bg-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+        /* Плавный скролл */
+        html {
+            scroll-behavior: smooth;
         }
 
-        .bg-layer-1 {
-            background: radial-gradient(circle at 20% 30%, rgba(109, 90, 207, 0.1) 0%, transparent 40%);
-            z-index: 0;
-        }
-
-        .bg-layer-2 {
-            background: radial-gradient(circle at 80% 70%, rgba(42, 157, 143, 0.08) 0%, transparent 40%);
-            z-index: 0;
-        }
-
-        /* Canvas для лепестков сакуры */
-        #sakuraCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        /* История основания */
+        .story-section {
+            padding: 5rem 2rem 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
             z-index: 2;
         }
 
-        /* Основной контейнер */
-        .container {
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(20, 20, 35, 0.5);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
             position: relative;
-            z-index: 3;
-            transform-style: preserve-3d;
         }
 
-        /* Хедер с 3D эффектом */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 1.2rem 0;
-            backdrop-filter: blur(20px);
-            background: rgba(10, 10, 20, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateZ(50px);
-            transform-style: preserve-3d;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transform-style: preserve-3d;
-        }
-
-        /* Логотип */
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
+        .story-text::before {
+            content: '📖';
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 1rem;
             color: var(--accent-primary);
-            text-decoration: none;
-            transform: translateZ(60px);
+        }
+
+        /* Обновлённый заголовок - сдержанный градиент */
+        .hero-title {
+            position: relative;
+            font-size: clamp(3.5rem, 10vw, 6.5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-align: center;
+            margin: 2rem 0 3rem;
+            cursor: default;
+            z-index: 2;
+        }
+
+        .letter {
+            display: inline-block;
             transition: var(--transition);
             position: relative;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .logo:hover {
-            color: var(--accent-secondary);
-            transform: translateZ(80px) scale(1.05);
+        .letter:hover {
+            transform: translateZ(20px) rotateX(10deg) rotateY(5deg);
+            color: #fff;
+            text-shadow: 
+                0 0 15px rgba(138, 43, 226, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .logo::after {
+        /* 3D эффекты для заголовков */
+        .title-3d {
+            position: relative;
+            display: inline-block;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .title-3d:hover {
+            transform: rotateX(15deg) rotateY(10deg) translateZ(20px);
+        }
+
+        .title-3d::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 10%;
+            width: 80%;
+            height: 10px;
+            background: radial-gradient(ellipse at center, 
+                rgba(138, 43, 226, 0.4) 0%, 
+                transparent 70%);
+            transform: rotateX(90deg) translateZ(-10px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .title-3d:hover::after {
+            opacity: 1;
+        }
+
+        /* Карточки услуг с 3D эффектом */
+        .service-card {
+            background: linear-gradient(145deg, 
+                rgba(35, 35, 55, 0.6), 
+                rgba(25, 25, 40, 0.4));
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transform: translateZ(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) translateZ(20px) rotateX(5deg);
+            border-color: var(--accent-primary);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(138, 43, 226, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .card-title::after {
             content: '';
             position: absolute;
             bottom: -5px;
@@ -123,26 +173,19 @@
             width: 0;
             height: 2px;
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
         }
 
-        .logo:hover::after {
+        .service-card:hover .card-title::after {
             width: 100%;
         }
 
-        /* Кнопки навигации */
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-            transform-style: preserve-3d;
-        }
-
-        /* Общий стиль кнопок */
+        /* Кнопки */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem 2rem;
             border-radius: 12px;
             font-size: 0.95rem;
             font-weight: 600;
@@ -151,7 +194,6 @@
             border: 1px solid transparent;
             cursor: pointer;
             backdrop-filter: blur(10px);
-            transform-style: preserve-3d;
             position: relative;
             overflow: hidden;
         }
@@ -163,8 +205,11 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.7s ease;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: left 0.6s ease;
         }
 
         .btn:hover::before {
@@ -172,664 +217,346 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: linear-gradient(135deg, var(--accent-primary), #6a11cb);
             color: white;
-            box-shadow: 0 15px 35px rgba(109, 90, 207, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transform: translateZ(50px);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
         }
 
         .btn-primary:hover {
-            transform: translateZ(70px) translateY(-5px);
+            transform: translateY(-3px) translateZ(10px);
             box-shadow: 
-                0 25px 50px rgba(109, 90, 207, 0.4),
-                0 0 60px rgba(109, 90, 207, 0.2);
+                0 15px 35px rgba(138, 43, 226, 0.4),
+                0 0 40px rgba(138, 43, 226, 0.2);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(40, 40, 60, 0.6);
             color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transform: translateZ(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateZ(60px) translateY(-5px);
+            background: rgba(50, 50, 70, 0.8);
+            transform: translateY(-3px);
             border-color: var(--accent-primary);
         }
 
-        /* Герой-секция */
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 3;
-            transform-style: preserve-3d;
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 1000px;
-            width: 100%;
-            transform-style: preserve-3d;
-        }
-
-        /* Главный заголовок */
-        .hero-title {
-            font-size: clamp(4rem, 12vw, 8rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            margin-bottom: 2rem;
-            cursor: default;
-            line-height: 1;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .title-wrapper {
-            display: inline-block;
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .title-letters {
-            display: inline-block;
-            transition: var(--transition);
-            color: var(--text-primary);
-            position: relative;
-            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            transform-style: preserve-3d;
-        }
-
-        /* История */
-        .story-box {
-            max-width: 700px;
-            margin: 3rem auto 4rem;
-            padding: 2.5rem;
-            border-radius: 24px;
-            background: rgba(25, 25, 40, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            transform: translateZ(40px);
-            transform-style: preserve-3d;
-            transition: var(--transition);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .story-box:hover {
-            transform: translateZ(60px) translateY(-10px);
-            border-color: var(--accent-primary);
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.3),
-                0 0 50px rgba(109, 90, 207, 0.2);
-        }
-
-        .story-text {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            text-align: center;
-            font-style: italic;
-            transform: translateZ(20px);
-        }
-
-        /* Кнопки действий */
-        .hero-actions {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 3rem;
-            transform-style: preserve-3d;
-        }
-
-        /* Секция услуг */
-        .services-section {
-            padding: 8rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        /* Заголовки секций */
-        .section-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            text-align: center;
-            margin-bottom: 5rem;
-            color: var(--text-primary);
-            position: relative;
-            transform-style: preserve-3d;
-            cursor: default;
-        }
-
-        .section-title-inner {
-            display: inline-block;
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Сетка услуг */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem;
-            transform-style: preserve-3d;
-        }
-
-        /* Карточки услуг */
-        .service-card {
-            background: rgba(30, 30, 50, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 2.5rem;
-            transition: var(--transition);
-            backdrop-filter: blur(20px);
-            transform: translateZ(30px);
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            transition: left 0.7s ease;
-        }
-
-        .service-card:hover::before {
-            left: 100%;
-        }
-
-        .service-card:hover {
-            transform: translateZ(60px) translateY(-15px) rotateX(5deg);
-            border-color: var(--accent-primary);
-            box-shadow: 
-                var(--shadow),
-                0 0 50px rgba(109, 90, 207, 0.3);
-        }
-
-        .service-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            box-shadow: 0 15px 30px rgba(109, 90, 207, 0.3);
-            transform: translateZ(40px);
-        }
-
-        .service-name {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            color: var(--text-primary);
-            transform: translateZ(30px);
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-            display: inline-block;
-        }
-
-        .service-name::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            transition: width 0.3s ease;
-        }
-
-        .service-card:hover .service-name::after {
-            width: 100%;
-        }
-
-        .price-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            transform: translateZ(20px);
-        }
-
-        .price-item:last-child {
-            border-bottom: none;
-        }
-
-        .price-value {
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        /* Секция контактов */
-        .contacts-section {
-            padding: 8rem 2rem;
-            background: var(--bg-secondary);
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
-        .contacts-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            transform-style: preserve-3d;
-        }
-
-        .contacts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 4rem;
-            transform-style: preserve-3d;
-        }
-
-        /* Кнопка WhatsApp */
+        /* WhatsApp кнопка */
         .whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 2rem;
             background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 12px;
             text-decoration: none;
-            font-weight: 600;
             transition: var(--transition);
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.3);
-            transform: translateZ(40px);
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
         }
 
         .whatsapp-btn:hover {
-            transform: translateZ(60px) translateY(-5px);
-            box-shadow: 
-                0 25px 50px rgba(37, 211, 102, 0.4),
-                0 0 60px rgba(37, 211, 102, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.4);
         }
 
-        .whatsapp-btn::before {
-            content: '';
-            position: absolute;
+        /* Лепестки сакуры */
+        #sakuraCanvas {
+            position: fixed;
             top: 0;
-            left: -100%;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.7s ease;
-        }
-
-        .whatsapp-btn:hover::before {
-            left: 100%;
-        }
-
-        /* Форма */
-        .form-container {
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            height: 550px;
-            background: rgba(25, 25, 40, 0.7);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            transform: translateZ(40px);
-            transform-style: preserve-3d;
-            transition: var(--transition);
-        }
-
-        .form-container:hover {
-            transform: translateZ(60px) translateY(-10px);
-            border-color: var(--accent-primary);
-            box-shadow: 
-                0 35px 70px rgba(0, 0, 0, 0.4),
-                0 0 60px rgba(109, 90, 207, 0.2);
-        }
-
-        /* Футер */
-        .footer {
-            padding: 4rem 2rem;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            transform-style: preserve-3d;
+            pointer-events: none;
+            z-index: 1;
         }
 
         /* Анимации появления */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px) translateZ(-100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) translateZ(0);
-            }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .animate-fade-up {
-            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Адаптивность */
         @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .nav-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-
             .hero-title {
-                font-size: clamp(3rem, 15vw, 5rem);
+                font-size: clamp(2.8rem, 12vw, 4.5rem);
             }
-
-            .story-box {
-                padding: 2rem;
-                margin: 2rem auto 3rem;
+            
+            .story-section {
+                padding: 3rem 1rem 2rem;
             }
-
-            .hero-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .hero-actions .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .service-card {
-                padding: 2rem;
-            }
-
-            .contacts-grid {
-                gap: 3rem;
-            }
-
-            .form-container {
-                height: 500px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .btn {
-                padding: 0.8rem 1.5rem;
-            }
-
-            .hero-title {
-                font-size: 2.8rem;
-            }
-
-            .story-box {
+            
+            .story-text {
+                font-size: 1rem;
                 padding: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
             }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Фоновые слои для глубины -->
-    <div class="bg-layer bg-layer-1"></div>
-    <div class="bg-layer bg-layer-2"></div>
-    
     <!-- Canvas для лепестков сакуры -->
     <canvas id="sakuraCanvas"></canvas>
 
-    <div class="container">
-        <!-- Хедер -->
-        <header class="header">
-            <nav class="nav-container">
-                <a href="#" class="logo">Actibilis</a>
-                <div class="nav-buttons">
-                    <a href="#services" class="btn btn-secondary">Услуги</a>
-                    <a href="#contact" class="btn btn-primary">Контакты</a>
-                </div>
-            </nav>
-        </header>
+    <!-- Хедер -->
+    <header style="position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.2rem; backdrop-filter: blur(15px); background: rgba(15, 15, 26, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+        <nav style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 1.3rem; font-weight: 700; color: var(--accent-primary);">
+                Actibilis
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="#services" class="btn btn-secondary" style="font-size: 0.9rem;">Услуги</a>
+                <a href="#contact" class="btn btn-primary" style="font-size: 0.9rem;">Контакты</a>
+            </div>
+        </nav>
+    </header>
 
-        <!-- Герой с заголовком -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1 class="hero-title animate-fade-up">
-                    <div class="title-wrapper">
-                        <span class="title-letters" id="interactiveTitle">Actibilis</span>
+    <!-- История основания -->
+    <section class="story-section fade-in">
+        <div class="story-text">
+            "Часто замечал, как людям нужны простые, но важные вещи: распечатать документы, сделать копии, заполнить формы, 
+            обработать фотографии или получить помощь с компьютером. Именно поэтому появился Actibilis — место, 
+            где технологии служат людям, а не наоборот."
+        </div>
+    </section>
+
+    <!-- Герой -->
+    <section style="min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; position: relative; z-index: 2;">
+        <div style="text-align: center; max-width: 900px;">
+            <div class="hero-title" id="interactiveTitle">
+                <!-- Буквы добавятся через JavaScript -->
+            </div>
+            <p style="font-size: 1.2rem; color: var(--text-secondary); margin: 1rem 0 3rem; line-height: 1.6; max-width: 600px;">
+                Копи-центр нового поколения: от простой печати до сложных IT-решений
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="#services" class="btn btn-primary">Наши услуги</a>
+                <a href="#contact" class="btn btn-secondary">Связаться</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Услуги -->
+    <section id="services" style="padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; position: relative;">
+        <h2 class="title-3d fade-in" style="font-size: 2.8rem; margin-bottom: 4rem; text-align: center; color: var(--text-primary);">
+            Наши услуги
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+            <!-- Печать и документы -->
+            <div class="service-card fade-in">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.8rem; box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);">
+                    🖨️
+                </div>
+                <h3 class="card-title">Печать и документы</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Фото на документы (3×4, 4 шт.)</span>
+                        <strong style="color: var(--accent-primary);">300 ₽</strong>
                     </div>
-                </h1>
-                
-                <div class="story-box animate-fade-up" style="animation-delay: 0.2s;">
-                    <p class="story-text">
-                        "Часто замечал, как людям нужны простые, но важные вещи: распечатать документы, сделать копии, 
-                        заполнить формы, обработать фотографии или получить помощь с компьютером. Именно поэтому появился 
-                        Actibilis — место, где технологии служат людям, а не наоборот."
-                    </p>
-                </div>
-
-                <div class="hero-actions animate-fade-up" style="animation-delay: 0.4s;">
-                    <a href="#services" class="btn btn-primary">Наши услуги</a>
-                    <a href="#contact" class="btn btn-secondary">Связаться</a>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Ксерокопия ч/б</span>
+                        <strong style="color: var(--accent-primary);">10 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Ксерокопия цветная</span>
+                        <strong style="color: var(--accent-primary);">20 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Ламинация А4</span>
+                        <strong style="color: var(--accent-primary);">70 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0;">
+                        <span>Набор текста (А4)</span>
+                        <strong style="color: var(--accent-primary);">60 ₽</strong>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Услуги -->
-        <section id="services" class="services-section">
-            <h2 class="section-title animate-fade-up">
-                <div class="section-title-inner">
-                    Наши услуги
+            <!-- 3D и гравировка -->
+            <div class="service-card fade-in" style="transition-delay: 0.1s;">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary)); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.8rem; box-shadow: 0 8px 20px rgba(0, 206, 209, 0.3);">
+                    🔨
                 </div>
+                <h3 class="card-title">3D-печать и гравировка</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>3D-печать</span>
+                        <strong style="color: var(--accent-primary);">от 13 ₽/г</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Гравировка фото на дереве</span>
+                        <strong style="color: var(--accent-primary);">от 300 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Арт-постеры</span>
+                        <strong style="color: var(--accent-primary);">от 50 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0;">
+                        <span>Закладки в книги</span>
+                        <strong style="color: var(--accent-primary);">25 ₽/шт</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IT-услуги -->
+            <div class="service-card fade-in" style="transition-delay: 0.2s;">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-tertiary), var(--accent-primary)); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.8rem; box-shadow: 0 8px 20px rgba(255, 107, 139, 0.3);">
+                    💻
+                </div>
+                <h3 class="card-title">IT-услуги</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Установка Windows</span>
+                        <strong style="color: var(--accent-primary);">1500 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Настройка / чистка Windows</span>
+                        <strong style="color: var(--accent-primary);">300-400 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span>Установка программ</span>
+                        <strong style="color: var(--accent-primary);">от 500 ₽</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.6rem 0;">
+                        <span>Восстановление фото</span>
+                        <strong style="color: var(--accent-primary);">от 250 ₽</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section id="contact" style="padding: 5rem 2rem; background: var(--bg-secondary); position: relative;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 class="title-3d fade-in" style="font-size: 2.8rem; margin-bottom: 4rem; text-align: center; color: var(--text-primary);">
+                Контакты
             </h2>
             
-            <div class="services-grid">
-                <!-- Печать и документы -->
-                <div class="service-card animate-fade-up">
-                    <div class="service-icon">🖨️</div>
-                    <h3 class="service-name">Печать и документы</h3>
-                    <div>
-                        <div class="price-item">
-                            <span>Фото на документы (3×4, 4 шт.)</span>
-                            <span class="price-value">300 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Ксерокопия ч/б</span>
-                            <span class="price-value">10 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Ксерокопия цветная</span>
-                            <span class="price-value">20 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Ламинация А4</span>
-                            <span class="price-value">70 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Набор текста (А4)</span>
-                            <span class="price-value">60 ₽</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3D и гравировка -->
-                <div class="service-card animate-fade-up" style="animation-delay: 0.1s;">
-                    <div class="service-icon">🔨</div>
-                    <h3 class="service-name">3D-печать и гравировка</h3>
-                    <div>
-                        <div class="price-item">
-                            <span>3D-печать</span>
-                            <span class="price-value">от 13 ₽/г</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Гравировка фото на дереве</span>
-                            <span class="price-value">от 300 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Арт-постеры</span>
-                            <span class="price-value">от 50 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Закладки в книги</span>
-                            <span class="price-value">25 ₽/шт</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IT-услуги -->
-                <div class="service-card animate-fade-up" style="animation-delay: 0.2s;">
-                    <div class="service-icon">💻</div>
-                    <h3 class="service-name">IT-услуги</h3>
-                    <div>
-                        <div class="price-item">
-                            <span>Установка Windows</span>
-                            <span class="price-value">1500 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Настройка / чистка Windows</span>
-                            <span class="price-value">300-400 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Установка программ</span>
-                            <span class="price-value">от 500 ₽</span>
-                        </div>
-                        <div class="price-item">
-                            <span>Восстановление фото</span>
-                            <span class="price-value">от 250 ₽</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Контакты -->
-        <section id="contact" class="contacts-section">
-            <div class="contacts-container">
-                <h2 class="section-title animate-fade-up">
-                    <div class="section-title-inner">
-                        Контакты
-                    </div>
-                </h2>
-                
-                <div class="contacts-grid">
-                    <div>
-                        <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem; transform: translateZ(30px);">Наш адрес</h3>
-                        <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.1rem;">
-                            <p style="margin-bottom: 1rem; transform: translateZ(20px);">📍 Республика Дагестан</p>
-                            <p style="margin-bottom: 1rem; transform: translateZ(20px);">Каякентский район, село Первомайское</p>
-                            <p style="margin-bottom: 1rem; transform: translateZ(20px);">Улица Пионерская, дом 60</p>
-                            <p style="margin-top: 2rem; color: var(--accent-secondary); font-weight: 600; transform: translateZ(20px);">
-                                🕒 Ежедневно 09:00 - 19:00
-                            </p>
-                        </div>
-                        
-                        <div style="margin-top: 3rem;">
-                            <h4 style="margin-bottom: 1rem; color: var(--accent-primary); transform: translateZ(30px);">Свяжитесь с нами:</h4>
-                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                                <a href="https://wa.me/79094787974" target="_blank" class="whatsapp-btn">
-                                    <span style="font-size: 1.4rem;">📱</span>
-                                    WhatsApp: +7 909 478-79-74
-                                </a>
-                                <button class="btn btn-secondary" onclick="copyContact()" style="justify-content: center;">
-                                    📋 Скопировать контакты
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem; transform: translateZ(30px);">Онлайн-заказ</h3>
-                        <div class="form-container">
-                            <iframe 
-                                src="https://forms.yandex.ru/u/69529a061f1eb554426a9176" 
-                                style="width: 100%; height: 100%; border: none;"
-                                title="Форма заказа"
-                                loading="lazy">
-                            </iframe>
-                        </div>
-                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem; text-align: center; transform: translateZ(20px);">
-                            Или напишите нам в WhatsApp для быстрого ответа
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 4rem;">
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary); font-size: 1.6rem;">Наш адрес</h3>
+                    <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.1rem;">
+                        <p style="margin-bottom: 1rem;">📍 Республика Дагестан</p>
+                        <p style="margin-bottom: 1rem;">Каякентский район, село Первомайское</p>
+                        <p style="margin-bottom: 1rem;">Улица Пионерская, дом 60</p>
+                        <p style="margin-top: 2rem; color: var(--accent-tertiary); font-weight: 600;">
+                            🕒 Ежедневно 09:00 - 19:00
                         </p>
                     </div>
+                    
+                    <div style="margin-top: 3rem;">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-primary);">Свяжитесь с нами:</h4>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <a href="https://wa.me/79094787974" target="_blank" class="whatsapp-btn">
+                                <span style="font-size: 1.2rem;">📱</span>
+                                WhatsApp: +7 909 478-79-74
+                            </a>
+                            <button class="btn btn-secondary" onclick="copyContact()" style="justify-content: center;">
+                                📋 Скопировать контакты
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Футер -->
-        <footer class="footer">
-            <div style="max-width: 1200px; margin: 0 auto;">
-                <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--accent-primary); transform: translateZ(40px);">
-                    Actibilis
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary); font-size: 1.6rem;">Онлайн-заказ</h3>
+                    <div style="border-radius: 20px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); height: 500px; background: rgba(20, 20, 35, 0.4);">
+                        <iframe 
+                            src="https://forms.yandex.ru/u/69529a061f1eb554426a9176" 
+                            style="width: 100%; height: 100%; border: none;"
+                            title="Форма заказа"
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem; text-align: center;">
+                        Или напишите нам в WhatsApp для быстрого ответа
+                    </p>
                 </div>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem; transform: translateZ(30px);">
-                    Место, где технологии служат людям
-                </p>
-                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                    <a href="#services" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(20px);">Услуги</a>
-                    <a href="#contact" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(20px);">Контакты</a>
-                    <a href="https://wa.me/79094787974" target="_blank" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(20px);">WhatsApp</a>
-                </div>
-                <p style="color: var(--text-secondary); font-size: 0.8rem; opacity: 0.7; transform: translateZ(20px);">
-                    © 2024 Actibilis. Все права защищены.
-                </p>
             </div>
-        </footer>
-    </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: var(--accent-primary);">
+                Actibilis
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Место, где технологии служат людям. Профессиональные услуги для вашего удобства.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem;">
+                <a href="#services" style="color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Услуги</a>
+                <a href="#contact" style="color: var(--text-secondary); text-decoration: none; transition: var(--transition);">Контакты</a>
+                <a href="https://wa.me/79094787974" target="_blank" style="color: var(--text-secondary); text-decoration: none; transition: var(--transition);">WhatsApp</a>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; opacity: 0.7;">
+                © 2024 Actibilis. Все права защищены.
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // Продвинутая система лепестков сакуры
+        // Интерактивное название
+        function createInteractiveTitle() {
+            const title = document.getElementById('interactiveTitle');
+            const word = 'Actibilis';
+            
+            title.innerHTML = '';
+            
+            for (let i = 0; i < word.length; i++) {
+                const letter = document.createElement('span');
+                letter.className = 'letter';
+                letter.textContent = word[i];
+                letter.style.transitionDelay = `${i * 0.05}s`;
+                
+                letter.addEventListener('mouseenter', (e) => {
+                    const rect = letter.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Более сдержанный 3D эффект
+                    const rotateX = ((rect.height/2 - y) / rect.height) * 10;
+                    const rotateY = ((x - rect.width/2) / rect.width) * 10;
+                    
+                    letter.style.transform = `
+                        translateZ(15px) 
+                        rotateX(${rotateX}deg) 
+                        rotateY(${rotateY}deg)
+                    `;
+                    letter.style.color = '#ffffff';
+                });
+                
+                letter.addEventListener('mouseleave', () => {
+                    letter.style.transform = 'translateZ(0) rotateX(0) rotateY(0)';
+                    letter.style.color = '';
+                });
+                
+                title.appendChild(letter);
+            }
+        }
+
+        // Лепестки сакуры
         class SakuraSystem {
             constructor() {
                 this.canvas = document.getElementById('sakuraCanvas');
                 this.ctx = this.canvas.getContext('2d');
                 this.petals = [];
-                this.maxPetals = 50;
-                this.stickElements = [];
-                this.mouse = { x: 0, y: 0 };
+                this.maxPetals = 30;
                 this.lastTime = 0;
                 
-                this.init();
-            }
-
-            init() {
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
-                this.canvas.addEventListener('mousemove', (e) => {
-                    this.mouse.x = e.clientX;
-                    this.mouse.y = e.clientY;
-                });
-
-                // Собираем все элементы для прилипания
-                this.collectStickElements();
-            }
-
-            collectStickElements() {
-                this.stickElements = Array.from(document.querySelectorAll(
-                    '.btn, .service-card, .story-box, .logo, .form-container'
-                ));
             }
 
             resize() {
@@ -840,152 +567,50 @@
             createPetal() {
                 if (this.petals.length < this.maxPetals) {
                     const petal = {
-                        // Начинаем с правой верхней части экрана
-                        x: this.canvas.width + Math.random() * 100,
-                        y: -20 - Math.random() * 50,
-                        size: Math.random() * 6 + 4,
-                        speedX: -(Math.random() * 3 + 1),
-                        speedY: Math.random() * 2 + 1,
+                        x: Math.random() * this.canvas.width * 1.5,
+                        y: -20,
+                        size: Math.random() * 4 + 3,
+                        speed: Math.random() * 1.5 + 0.5,
                         rotation: Math.random() * Math.PI * 2,
-                        rotationSpeed: (Math.random() - 0.5) * 0.1,
-                        color: `hsla(${320 + Math.random() * 40}, 70%, 70%, ${0.4 + Math.random() * 0.3})`,
+                        rotationSpeed: (Math.random() - 0.5) * 0.05,
+                        color: `hsla(${320 + Math.random() * 20}, 60%, 70%, ${0.2 + Math.random() * 0.2})`,
                         life: 1,
-                        decay: 0.0003,
-                        state: 'falling', // falling, sticking, fading
-                        stickTime: 0,
-                        maxStickTime: 3000 + Math.random() * 5000, // 3-8 секунд
-                        stickElement: null,
-                        sway: Math.random() * Math.PI * 2,
-                        swaySpeed: Math.random() * 0.05 + 0.02
+                        decay: 0.0003
                     };
                     this.petals.push(petal);
                 }
             }
 
-            checkCollision(petal, element) {
-                const rect = element.getBoundingClientRect();
-                return (
-                    petal.x >= rect.left &&
-                    petal.x <= rect.right &&
-                    petal.y >= rect.top &&
-                    petal.y <= rect.bottom &&
-                    petal.state === 'falling'
-                );
-            }
-
             update(currentTime) {
                 const delta = currentTime - this.lastTime;
                 this.lastTime = currentTime;
-
-                // Создаем новые лепестки
-                if (delta > 100 && Math.random() < 0.2) {
+                
+                if (delta > 100 && Math.random() < 0.1) {
                     this.createPetal();
                 }
-
-                // Обновляем существующие лепестки
+                
                 this.petals = this.petals.filter(petal => {
-                    if (petal.state === 'falling') {
-                        // Физика падения
-                        petal.x += petal.speedX;
-                        petal.y += petal.speedY;
-                        petal.rotation += petal.rotationSpeed;
-                        petal.sway += petal.swaySpeed;
-                        
-                        // Легкое колебание
-                        petal.x += Math.sin(petal.sway) * 0.5;
-
-                        // Гравитация
-                        petal.speedY += 0.02;
-
-                        // Проверка столкновений с элементами
-                        if (Math.random() < 0.02) { // Проверяем не каждый кадр для оптимизации
-                            for (const element of this.stickElements) {
-                                if (this.checkCollision(petal, element)) {
-                                    petal.state = 'sticking';
-                                    petal.stickElement = element;
-                                    petal.stickOffsetX = petal.x - element.getBoundingClientRect().left;
-                                    petal.stickOffsetY = petal.y - element.getBoundingClientRect().top;
-                                    break;
-                                }
-                            }
-                        }
-
-                        // Реакция на курсор
-                        const dx = petal.x - this.mouse.x;
-                        const dy = petal.y - this.mouse.y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance < 120) {
-                            const force = (120 - distance) / 120;
-                            const angle = Math.atan2(dy, dx);
-                            petal.x += Math.cos(angle) * force * 4;
-                            petal.y += Math.sin(angle) * force * 4;
-                        }
-
-                        // Сброс, если улетел за экран
-                        if (petal.y > this.canvas.height + 100 || petal.x < -100) {
-                            return false;
-                        }
-                    }
-                    else if (petal.state === 'sticking') {
-                        // Лепесток прилип к элементу
-                        if (petal.stickElement) {
-                            const rect = petal.stickElement.getBoundingClientRect();
-                            petal.x = rect.left + petal.stickOffsetX;
-                            petal.y = rect.top + petal.stickOffsetY;
-                            
-                            petal.stickTime += delta;
-                            
-                            // Через некоторое время начинаем исчезать
-                            if (petal.stickTime > petal.maxStickTime) {
-                                petal.state = 'fading';
-                            }
-                        }
-                    }
-                    else if (petal.state === 'fading') {
-                        // Исчезновение
-                        petal.life -= 0.01;
-                        if (petal.life <= 0) {
-                            return false;
-                        }
-                    }
-
+                    petal.y += petal.speed;
+                    petal.x += Math.sin(petal.y * 0.01) * 0.3;
+                    petal.rotation += petal.rotationSpeed;
                     petal.life -= petal.decay;
-                    return petal.life > 0;
+                    
+                    return petal.y < this.canvas.height + 50 && petal.life > 0;
                 });
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Рисуем все лепестки
                 this.petals.forEach(petal => {
                     this.ctx.save();
-                    
-                    // Позиционирование и вращение
                     this.ctx.translate(petal.x, petal.y);
                     this.ctx.rotate(petal.rotation);
-                    
-                    // Прозрачность
-                    this.ctx.globalAlpha = petal.life * (petal.state === 'fading' ? 0.5 : 1);
-                    
-                    // Цвет лепестка
                     this.ctx.fillStyle = petal.color;
                     
-                    // Рисуем лепесток сакуры (5 лепестков)
+                    // Простой лепесток
                     this.ctx.beginPath();
-                    for (let i = 0; i < 5; i++) {
-                        const angle = (i * 2 * Math.PI) / 5;
-                        const x = Math.cos(angle) * petal.size;
-                        const y = Math.sin(angle) * petal.size;
-                        
-                        if (i === 0) {
-                            this.ctx.moveTo(x, y);
-                        } else {
-                            this.ctx.lineTo(x, y);
-                        }
-                    }
-                    this.ctx.closePath();
+                    this.ctx.ellipse(0, 0, petal.size, petal.size * 0.6, 0, 0, Math.PI * 2);
                     this.ctx.fill();
                     
                     this.ctx.restore();
@@ -999,156 +624,29 @@
             }
         }
 
-        // Интерактивный заголовок
-        function initInteractiveTitle() {
-            const title = document.getElementById('interactiveTitle');
-            const text = 'Actibilis';
-            
-            title.innerHTML = '';
-            
-            // Создаем буквы
-            for (let i = 0; i < text.length; i++) {
-                const span = document.createElement('span');
-                span.textContent = text[i];
-                span.style.display = 'inline-block';
-                span.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-                span.style.cursor = 'default';
-                span.style.transformOrigin = 'center center';
-                
-                title.appendChild(span);
-            }
-            
-            const letters = title.children;
-            
-            // Эффект при наведении
-            title.addEventListener('mousemove', (e) => {
-                const rect = title.getBoundingClientRect();
-                
-                Array.from(letters).forEach((letter, index) => {
-                    const letterRect = letter.getBoundingClientRect();
-                    const letterCenterX = letterRect.left + letterRect.width / 2;
-                    const letterCenterY = letterRect.top + letterRect.height / 2;
-                    
-                    const distanceX = e.clientX - letterCenterX;
-                    const distanceY = e.clientY - letterCenterY;
-                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-                    
-                    const maxDistance = 150;
-                    const influence = Math.max(0, 1 - distance / maxDistance);
-                    
-                    if (influence > 0) {
-                        const rotateX = (distanceY / 50) * influence;
-                        const rotateY = -(distanceX / 50) * influence;
-                        const translateZ = 30 * influence;
-                        const scale = 1 + 0.2 * influence;
-                        
-                        letter.style.transform = `
-                            translateZ(${translateZ}px)
-                            rotateX(${rotateX}deg)
-                            rotateY(${rotateY}deg)
-                            scale(${scale})
-                        `;
-                        letter.style.color = `hsl(${280 + influence * 20}, 70%, 85%)`;
-                    } else {
-                        letter.style.transform = '';
-                        letter.style.color = '';
-                    }
-                });
-            });
-            
-            title.addEventListener('mouseleave', () => {
-                Array.from(letters).forEach(letter => {
-                    letter.style.transform = '';
-                    letter.style.color = '';
-                });
-            });
-        }
-
-        // Интерактивность для всех заголовков
-        function initSectionTitles() {
-            const titles = document.querySelectorAll('.section-title-inner, .service-name');
-            
-            titles.forEach(title => {
-                title.addEventListener('mousemove', (e) => {
-                    const rect = title.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateY = ((x - centerX) / centerX) * 5;
-                    const rotateX = ((centerY - y) / centerY) * 5;
-                    const translateZ = 20;
-                    
-                    title.style.transform = `
-                        rotateX(${rotateX}deg)
-                        rotateY(${rotateY}deg)
-                        translateZ(${translateZ}px)
-                    `;
-                    
-                    if (title.classList.contains('service-name')) {
-                        title.style.color = `hsl(${280}, 70%, 85%)`;
-                    }
-                });
-                
-                title.addEventListener('mouseleave', () => {
-                    title.style.transform = '';
-                    if (title.classList.contains('service-name')) {
-                        title.style.color = '';
-                    }
-                });
-            });
-        }
-
-        // 3D эффект для всего сайта при движении мыши
-        function init3DEffect() {
-            const container = document.querySelector('.container');
-            
-            document.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth - 0.5) * 10;
-                const y = (e.clientY / window.innerHeight - 0.5) * 10;
-                
-                container.style.transform = `
-                    perspective(${var(--perspective)})
-                    rotateY(${x}deg)
-                    rotateX(${-y}deg)
-                `;
-            });
-            
-            document.addEventListener('mouseleave', () => {
-                container.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
-            });
-        }
-
         // Анимации при скролле
         function initScrollAnimations() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
+                        entry.target.classList.add('visible');
                         observer.unobserve(entry.target);
                     }
                 });
             }, {
                 threshold: 0.1,
-                rootMargin: '100px'
+                rootMargin: '50px'
             });
             
-            document.querySelectorAll('.animate-fade-up').forEach(el => {
-                el.style.animationPlayState = 'paused';
+            document.querySelectorAll('.fade-in').forEach(el => {
                 observer.observe(el);
             });
             
-            // Параллакс эффект для фона
+            // Параллакс для заголовка
             window.addEventListener('scroll', () => {
                 const scrolled = window.pageYOffset;
-                const bgLayers = document.querySelectorAll('.bg-layer');
-                
-                bgLayers.forEach((layer, index) => {
-                    const speed = 0.1 + (index * 0.05);
-                    layer.style.transform = `translateY(${scrolled * speed}px)`;
-                });
+                const heroTitle = document.querySelector('.hero-title');
+                heroTitle.style.transform = `translateY(${scrolled * 0.03}px)`;
             });
         }
 
@@ -1157,10 +655,7 @@
             const contactInfo = `Actibilis - Копи-центр\n\n📍 Адрес:\nРеспублика Дагестан, Каякентский район\nСело Первомайское, ул. Пионерская, 60\n\n📞 WhatsApp: +7 909 478-79-74\n\n🕒 График работы:\nЕжедневно 09:00 - 19:00`;
             
             navigator.clipboard.writeText(contactInfo).then(() => {
-                showNotification('✅ Контакты скопированы');
-            }).catch(err => {
-                console.error('Ошибка копирования:', err);
-                showNotification('❌ Ошибка копирования');
+                showNotification('✅ Контакты скопированы в буфер обмена');
             });
         }
 
@@ -1171,94 +666,72 @@
                 position: fixed;
                 top: 30px;
                 right: 30px;
-                background: rgba(25, 25, 40, 0.95);
+                background: rgba(20, 20, 35, 0.95);
                 color: var(--text-primary);
-                padding: 1.2rem 2rem;
-                border-radius: 15px;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
                 z-index: 10000;
-                animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
                 font-weight: 600;
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(109, 90, 207, 0.3);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(138, 43, 226, 0.3);
                 display: flex;
                 align-items: center;
-                gap: 0.8rem;
-                max-width: 350px;
+                gap: 0.5rem;
             `;
             
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                notification.style.animation = 'slideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
                 setTimeout(() => notification.remove(), 400);
             }, 3000);
         }
 
         // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            // Запускаем систему лепестков сакуры
+            createInteractiveTitle();
+            initScrollAnimations();
+            
+            // Запускаем систему лепестков
             const sakura = new SakuraSystem();
             requestAnimationFrame((t) => sakura.animate(t));
-            
-            // Инициализируем интерактивные элементы
-            initInteractiveTitle();
-            initSectionTitles();
-            init3DEffect();
-            initScrollAnimations();
             
             // Добавляем стили для анимаций
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes slideIn {
-                    from { 
-                        transform: translateX(100%) translateZ(-100px);
-                        opacity: 0; 
-                    }
-                    to { 
-                        transform: translateX(0) translateZ(0);
-                        opacity: 1; 
-                    }
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
                 }
                 @keyframes slideOut {
-                    from { 
-                        transform: translateX(0) translateZ(0);
-                        opacity: 1; 
-                    }
-                    to { 
-                        transform: translateX(100%) translateZ(-100px);
-                        opacity: 0; 
-                    }
-                }
-                
-                @media (max-width: 768px) {
-                    .notification {
-                        top: 20px;
-                        right: 20px;
-                        left: 20px;
-                        max-width: none;
-                    }
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
                 }
             `;
             document.head.appendChild(style);
-            
-            // Мобильная оптимизация
-            if ('ontouchstart' in window) {
-                document.documentElement.style.touchAction = 'manipulation';
-                document.documentElement.style.webkitTapHighlightColor = 'transparent';
+        });
+
+        // 3D эффект для всех заголовков при наведении
+        document.querySelectorAll('.title-3d').forEach(title => {
+            title.addEventListener('mousemove', (e) => {
+                const rect = title.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 
-                // Уменьшаем интенсивность 3D эффекта на мобильных
-                document.removeEventListener('mousemove', init3DEffect);
-            }
-            
-            // Обновляем элементы для прилипания при изменении DOM
-            const observer = new MutationObserver(() => {
-                sakura.collectStickElements();
+                const rotateX = ((rect.height/2 - y) / rect.height) * 15;
+                const rotateY = ((x - rect.width/2) / rect.width) * 15;
+                
+                title.style.transform = `
+                    rotateX(${rotateX}deg) 
+                    rotateY(${rotateY}deg) 
+                    translateZ(25px)
+                `;
             });
             
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
+            title.addEventListener('mouseleave', () => {
+                title.style.transform = 'rotateX(0) rotateY(0) translateZ(0)';
             });
         });
     </script>
