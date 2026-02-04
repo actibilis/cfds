@@ -1,0 +1,1489 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Салон печати и цифровых услуг — 3D / Фото / Ремонт ПК</title>
+  <meta name="description" content="Печать, гравировка, IT-услуги, восстановление фото. Полный спектр цифровых услуг. Отправляй файлы через форму — получи расчёт." />
+
+  <style>
+    :root{
+      --bg: #0a0b15;
+      --panel: rgba(255, 255, 255, .08);
+      --panel2: rgba(255, 255, 255, .12);
+      --stroke: rgba(255, 255, 255, .15);
+      --text: rgba(255, 255, 255, .95);
+      --muted: rgba(255, 255, 255, .7);
+      --accent: #ff4db8; /* Более мягкий акцент */
+      --accent2: #8b5cf6;
+      --accent3: #22d3ee;
+      --shadow: 0 20px 60px rgba(0, 0, 0, .7);
+      --r: 20px;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      color: var(--text);
+      background: 
+        radial-gradient(ellipse at 10% 10%, rgba(139, 92, 246, .25), transparent 50%),
+        radial-gradient(ellipse at 95% 20%, rgba(255, 77, 184, .18), transparent 50%),
+        radial-gradient(ellipse at 70% 95%, rgba(34, 211, 238, .12), transparent 50%),
+        linear-gradient(180deg, #070812 0%, var(--bg) 40%, #050611 100%);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ====== Canvas для интерактивной Сакуры ====== */
+    #sakuraCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ====== HEADER ====== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(12px) saturate(180%);
+      background: rgba(10, 11, 21, 0.85);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 240px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 77, 184, .9), transparent 70%),
+        radial-gradient(circle at 70% 70%, rgba(34, 211, 238, .8), transparent 70%),
+        linear-gradient(135deg, rgba(139, 92, 246, .9), rgba(255, 77, 184, .7));
+      box-shadow: 0 12px 40px rgba(255, 77, 184, .25);
+      border: 1px solid rgba(255, 255, 255, .2);
+    }
+
+    .brand b { font-size: 15px; font-weight: 600; }
+    .brand span {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: rgba(255, 255, 255, .04);
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+    }
+
+    .links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all .3s var(--ease);
+    }
+
+    .links a:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .links a.active {
+      color: var(--text);
+      border-color: var(--stroke);
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .navcta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-width: 240px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .05);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .3s var(--ease);
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, .08);
+      transform: translateY(-2px);
+    }
+
+    .btn.primary {
+      border-color: rgba(255, 77, 184, .4);
+      background: linear-gradient(135deg, rgba(255, 77, 184, .25), rgba(139, 92, 246, .2));
+      box-shadow: 0 10px 30px rgba(255, 77, 184, .15);
+    }
+
+    .btn.primary:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 12px 40px rgba(255, 77, 184, .25);
+    }
+
+    .btn.small { height: 36px; padding: 0 14px; font-size: 12.5px; }
+    .btn.icon { width: 40px; padding: 0; }
+
+    @media (max-width: 1000px) {
+      .nav { flex-direction: column; align-items: stretch; gap: 15px; }
+      .brand, .navcta { min-width: auto; justify-content: center; }
+      .links { order: 3; }
+    }
+
+    /* ====== HERO ====== */
+    .hero {
+      padding: 50px 0 30px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 25px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 30px; }
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--panel), rgba(255, 255, 255, .02));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-left { padding: 30px; }
+
+    .kicker {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .05);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      width: fit-content;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent2));
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    h1 {
+      margin: 20px 0 15px;
+      font-size: 44px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #d1c4e9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) { h1 { font-size: 34px; } }
+
+    .sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 25px;
+      max-width: 65ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 25px;
+    }
+
+    .hero-actions .btn { height: 48px; padding: 0 22px; font-size: 14px; }
+
+    .hero-right {
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: relative;
+    }
+
+    .mini {
+      background: linear-gradient(145deg, var(--panel2), rgba(255, 255, 255, .03));
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 18px;
+      position: relative;
+      z-index: 1;
+      transition: transform .4s var(--ease), border-color .4s var(--ease);
+    }
+
+    .mini:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, .25);
+    }
+
+    .mini b { display: block; font-size: 15px; margin-bottom: 8px; font-weight: 600; }
+    .mini p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+
+    /* ====== СЕКЦИИ ====== */
+    section {
+      margin-top: 40px;
+      position: relative;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ====== УСЛУГИ И ЦЕНЫ (ОБНОВЛЕННЫЙ БЛОК) ====== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .service-category {
+      background: linear-gradient(145deg, var(--panel), rgba(255, 255, 255, .02));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .service-category h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--stroke);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .service-category h3::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: block;
+    }
+
+    .price-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(255, 255, 255, .03);
+      transition: all .3s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-item:hover {
+      border-color: rgba(255, 255, 255, .2);
+      background: rgba(255, 255, 255, .05);
+      transform: translateX(5px);
+    }
+
+    .price-item::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .05), transparent);
+      transition: left .6s var(--ease);
+    }
+
+    .price-item:hover::after {
+      left: 100%;
+    }
+
+    .price-item b {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .price-tag {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(255, 77, 184, .1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 77, 184, .2);
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .price-note {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    /* ====== ПОРТФОЛИО ====== */
+    .portfolio {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .shot {
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: 
+        linear-gradient(135deg, rgba(255, 77, 184, .1), rgba(139, 92, 246, .08)),
+        radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, .05), transparent 60%),
+        rgba(255, 255, 255, .02);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all .4s var(--ease);
+    }
+
+    .shot:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(255, 255, 255, .3);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, .5);
+    }
+
+    .shot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(400px 220px at 70% 10%, rgba(34, 211, 238, .1), transparent 60%),
+        radial-gradient(300px 180px at 10% 90%, rgba(255, 77, 184, .08), transparent 55%);
+      pointer-events: none;
+    }
+
+    .shot span {
+      position: absolute;
+      left: 15px;
+      bottom: 15px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .9);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(0, 0, 0, .4);
+      backdrop-filter: blur(10px);
+      font-weight: 500;
+    }
+
+    /* ====== КАК РАБОТАЕМ ====== */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .step {
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid var(--stroke);
+      background: linear-gradient(145deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .01));
+      text-align: center;
+      transition: transform .4s var(--ease);
+    }
+
+    .step:hover { transform: translateY(-5px); }
+
+    .step b {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: 2px solid rgba(255, 255, 255, .2);
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ====== CTA ====== */
+    .cta {
+      margin-top: 40px;
+      padding: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      border-radius: var(--r);
+      border: 1px solid var(--stroke);
+      background: 
+        radial-gradient(600px 250px at 20% 50%, rgba(255, 77, 184, .15), transparent 60%),
+        radial-gradient(600px 280px at 90% 50%, rgba(34, 211, 238, .12), transparent 60%),
+        rgba(255, 255, 255, .03);
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .cta { flex-direction: column; text-align: center; padding: 30px; }
+    }
+
+    .cta b { font-size: 22px; font-weight: 700; display: block; }
+    .cta span { display: block; color: var(--muted); font-size: 16px; margin-top: 10px; line-height: 1.5; }
+
+    /* ====== КОНТАКТЫ И ФОРМА ====== */
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 25px;
+    }
+
+    @media (max-width: 900px) { .contact { grid-template-columns: 1fr; } }
+
+    .contact .box { padding: 30px; }
+
+    .contact h3 { margin: 0 0 15px; font-size: 20px; font-weight: 700; }
+    .contact p { margin: 0 0 20px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+    .kv {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .kv div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .03);
+      font-size: 15px;
+    }
+
+    .kv div span { color: var(--muted); }
+
+    .iframeWrap {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .02);
+      min-height: 600px;
+      height: 600px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* ====== FAQ ====== */
+    .faq { display: grid; gap: 12px; }
+
+    .qa {
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .03);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: all .3s var(--ease);
+    }
+
+    .qa:hover { border-color: rgba(255, 255, 255, .25); }
+
+    .qa button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 20px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .qa button span { color: var(--muted); font-size: 14px; font-weight: 400; }
+
+    .qa .ans {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .5s var(--ease);
+    }
+
+    .qa .ans p {
+      margin: 0;
+      padding: 0 25px 25px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .chev {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, .03);
+      display: grid;
+      place-items: center;
+      transition: all .4s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .qa.open .chev { transform: rotate(180deg); background: rgba(255, 255, 255, .08); }
+
+    /* ====== FOOTER ====== */
+    footer {
+      margin-top: 50px;
+      color: rgba(255, 255, 255, .6);
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .sep { opacity: .7; }
+
+    @media (max-width: 768px) {
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    /* ====== FAB ====== */
+    .fab {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 60;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .fab .pill {
+      display: none;
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(10, 11, 21, .7);
+      backdrop-filter: blur(15px);
+      color: rgba(255, 255, 255, .9);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+    }
+
+    @media (min-width: 850px) { .fab .pill { display: block; } }
+
+    /* ====== TOAST ====== */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%) translateY(25px);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s var(--ease), transform .4s var(--ease);
+      padding: 14px 22px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: rgba(10, 11, 21, .85);
+      backdrop-filter: blur(15px);
+      color: rgba(255, 255, 255, .9);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      max-width: calc(100% - 40px);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ====== MODAL GALLERY ====== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .8);
+      backdrop-filter: blur(15px);
+      z-index: 90;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-card {
+      width: min(1000px, 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      background: 
+        radial-gradient(700px 300px at 20% 10%, rgba(255, 77, 184, .2), transparent 60%),
+        radial-gradient(700px 350px at 90% 30%, rgba(34, 211, 238, .15), transparent 60%),
+        rgba(15, 17, 30, .9);
+      box-shadow: 0 40px 120px rgba(0, 0, 0, .8);
+      overflow: hidden;
+      transform: translateY(15px) scale(.98);
+      opacity: 0;
+      transition: opacity .4s var(--ease), transform .4s var(--ease);
+    }
+
+    .modal.open .modal-card {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 20px 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .modal-top b { font-size: 18px; font-weight: 600; }
+    .modal-top span { color: var(--muted); font-size: 14px; }
+
+    .modal-body { padding: 25px; }
+
+    .modal-preview {
+      height: min(60vh, 550px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      background: 
+        linear-gradient(135deg, rgba(255, 77, 184, .15), rgba(139, 92, 246, .12)),
+        radial-gradient(450px 280px at 30% 30%, rgba(255, 255, 255, .1), transparent 60%),
+        rgba(255, 255, 255, .03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-caption {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .nav-arrows {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      padding: 0 20px;
+    }
+
+    .nav-arrows button {
+      pointer-events: auto;
+      border: 1px solid rgba(255, 255, 255, .2);
+      background: rgba(0, 0, 0, .4);
+      color: rgba(255, 255, 255, .9);
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      font-size: 18px;
+      transition: all .3s var(--ease);
+    }
+
+    .nav-arrows button:hover {
+      background: rgba(255, 255, 255, .1);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, .3);
+    }
+
+    /* ====== АНИМАЦИИ ПОЯВЛЕНИЯ ====== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Canvas для интерактивной сакуры -->
+  <canvas id="sakuraCanvas"></canvas>
+
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <b>Салон печати и цифровых услуг</b>
+          <span>3D • Фото • Гравировка • IT-услуги • Дизайн</span>
+        </div>
+      </div>
+
+      <nav class="links">
+        <a href="#services" class="active">Услуги и цены</a>
+        <a href="#portfolio">Портфолио</a>
+        <a href="#how">Как работаем</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Контакты и заказ</a>
+      </nav>
+
+      <div class="navcta">
+        <a class="btn" href="tel:+7XXXXXXXXXX">Позвонить</a>
+        <a class="btn primary" href="#contact">Отправить файлы</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div class="card hero-left reveal in">
+        <div class="kicker"><span class="dot"></span> Японский вайб • аккуратный “вау” • быстро и чётко</div>
+        <h1>Цифровые услуги, которые работают.</h1>
+        <p class="sub">
+          От 3D-печати и восстановления фотографий до настройки компьютера. Полный цикл в одном месте. 
+          Клиент отправляет задачу — ты получаешь готовый результат с безупречным качеством.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#contact">Отправить задачу / файлы</a>
+          <a class="btn" href="#services">Посмотреть все услуги</a>
+          <button class="btn" id="copyBtn" type="button">Скопировать контакт</button>
+        </div>
+      </div>
+
+      <div class="card hero-right reveal">
+        <div class="mini">
+          <b>✅ Печать и документы</b>
+          <p>Фото на документы, ксерокопия, ламинация, набор текста. Точно в срок.</p>
+        </div>
+        <div class="mini">
+          <b>🖥️ IT-услуги и ремонт</b>
+          <p>Установка Windows, программ, чистка, настройка. Решаем проблемы с ПК.</p>
+        </div>
+        <div class="mini">
+          <b>🎨 Дизайн и графика</b>
+          <p>Восстановление фото, арт-постеры, товарные карточки, доклады.</p>
+        </div>
+        <div class="mini">
+          <b>✨ “Буфер” для задач</b>
+          <p>Отправка файлов и описания задачи через форму. Даже если мессенджеры не работают.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ОБНОВЛЕННАЯ СЕКЦИЯ УСЛУГ И ЦЕН -->
+    <section id="services" class="reveal">
+      <div class="section-head">
+        <h2>Услуги и точные цены</h2>
+        <span>прозрачно, без скрытых платежей</span>
+      </div>
+
+      <div class="services-grid">
+        <!-- Категория 1: Печать и документы -->
+        <div class="service-category">
+          <h3>🖨️ Печать, копии, документы</h3>
+          <div class="price-list">
+            <div class="price-item">
+              <div>
+                <b>Фото на документы (3×4, 4 шт.)</b>
+                <div class="price-note">С обработкой, печатью</div>
+              </div>
+              <span class="price-tag">300 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Ксерокопия ч/б (А4)</b>
+                <div class="price-note">Односторонняя</div>
+              </div>
+              <span class="price-tag">10 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Ксерокопия цветная (А4)</b>
+                <div class="price-note">Односторонняя</div>
+              </div>
+              <span class="price-tag">20 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Ксерокопия с двух сторон</b>
+                <div class="price-note">+5 ₽ к базовой стоимости</div>
+              </div>
+              <span class="price-tag">+5 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Ламинация А4</b>
+              </div>
+              <span class="price-tag">70 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Набор текста (А4)</b>
+                <div class="price-note">Одна страница</div>
+              </div>
+              <span class="price-tag">60 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Электронные копии на почту</b>
+              </div>
+              <span class="price-tag">20 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Категория 2: 3D-печать, гравировка, дизайн -->
+        <div class="service-category">
+          <h3>🔨 3D-печать, гравировка, дизайн</h3>
+          <div class="price-list">
+            <div class="price-item">
+              <div>
+                <b>3D-печать</b>
+                <div class="price-note">Зависит от фигуры, от</div>
+              </div>
+              <span class="price-tag">13 ₽/грамм</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Гравировка фото на дереве</b>
+                <div class="price-note">От размера и сложности</div>
+              </div>
+              <span class="price-tag">от 300 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Арт-постеры (печать)</b>
+                <div class="price-note">От формата</div>
+              </div>
+              <span class="price-tag">от 50 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Товарные карточки</b>
+                <div class="price-note">Дизайн + печать</div>
+              </div>
+              <span class="price-tag">от 400 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Закладки в книги</b>
+              </div>
+              <span class="price-tag">25 ₽/шт</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Доклад (поиск информации)</b>
+              </div>
+              <span class="price-tag">от 30 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Восстановление старых фото</b>
+                <div class="price-note">Ретушь, цветокоррекция</div>
+              </div>
+              <span class="price-tag">от 250 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Категория 3: IT-услуги -->
+        <div class="service-category">
+          <h3>🖥️ IT-услуги и ремонт ПК</h3>
+          <div class="price-list">
+            <div class="price-item">
+              <div>
+                <b>Установка Windows</b>
+                <div class="price-note">С драйверами, базовый набор ПО</div>
+              </div>
+              <span class="price-tag">1500 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Настройка / чистка Windows</b>
+                <div class="price-note">Оптимизация, удаление вирусов</div>
+              </div>
+              <span class="price-tag">300–400 ₽</span>
+            </div>
+            <div class="price-item">
+              <div>
+                <b>Установка программ</b>
+                <div class="price-note">Офис, графические, специализированные</div>
+              </div>
+              <span class="price-tag">от 500 ₽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="reveal">
+      <div class="section-head">
+        <h2>Портфолио работ</h2>
+        <span>кликни для просмотра</span>
+      </div>
+
+      <div class="portfolio">
+        <div class="shot" data-title="3D-печать: фигурки и детали" data-desc="Детализация • чистые слои • прочность"><span>3D-модели и фигурки</span></div>
+        <div class="shot" data-title="Гравировка на дереве" data-desc="Портреты, надписи • контраст • ручная работа"><span>Лазерная гравировка</span></div>
+        <div class="shot" data-title="Восстановленные фотографии" data-desc="Ретушь, цветокоррекция • возвращение памяти"><span>Реставрация фото</span></div>
+        <div class="shot" data-title="Фирменный стиль и карточки" data-desc="Товарные карточки • арт-постеры • дизайн"><span>Дизайн и полиграфия</span></div>
+        <div class="shot" data-title="IT-услуги: рабочие станции" data-desc="Чистые системы • оптимизация • готовность к работе"><span>Настроенные ПК</span></div>
+        <div class="shot" data-title="Документы и ламинация" data-desc="Аккуратно • точно в срок • профессионально"><span>Документы и печать</span></div>
+      </div>
+    </section>
+
+    <section id="how" class="reveal">
+      <div class="section-head">
+        <h2>Как это работает</h2>
+        <span>3 простых шага</span>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <b><span class="num">1</span> Описываешь задачу или отправляешь файлы</b>
+          <p>Через форму на сайте, в мессенджере или по телефону. Даже если есть только идея — поможем с макетом.</p>
+        </div>
+        <div class="step">
+          <b><span class="num">2</span> Получаешь точный расчёт и сроки</b>
+          <p>Быстро оцениваем работу, согласовываем детали и называем финальную цену. Без скрытых платежей.</p>
+        </div>
+        <div class="step">
+          <b><span class="num">3</span> Забираешь готовый результат</b>
+          <p>Всё готово в оговоренный срок. Самовывоз, или обсудим удобный способ получения.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="reveal">
+      <div class="section-head">
+        <h2>Частые вопросы</h2>
+        <span>ответы на главное</span>
+      </div>
+
+      <div class="faq">
+        <div class="qa">
+          <button type="button">
+            <b>Можно ли прислать только фото/идею, без готового файла?</b>
+            <span>да, часто так и делают</span>
+            <div class="chev">⌄</div>
+          </button>
+          <div class="ans">
+            <p>Конечно. Для гравировки или 3D-печати достаточно фотографии, эскиза или даже текстового описания. Мы поможем создать макет.</p>
+          </div>
+        </div>
+
+        <div class="qa">
+          <button type="button">
+            <b>Как быстро выполняются заказы?</b>
+            <span>зависит от сложности</span>
+            <div class="chev">⌄</div>
+          </button>
+          <div class="ans">
+            <p>Печать документов и копии — за несколько минут. 3D-печать и гравировка — от нескольких часов до 1-2 дней. IT-услуги — обычно в день обращения.</p>
+          </div>
+        </div>
+
+        <div class="qa">
+          <button type="button">
+            <b>Работаете ли вы с юридическими лицами?</b>
+            <span>да, предоставляем документы</span>
+            <div class="chev">⌄</div>
+          </button>
+          <div class="ans">
+            <p>Да, работаем как с физическими, так и с юридическими лицами. По запросу предоставим все необходимые документы для отчётности.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta reveal">
+      <div>
+        <b>Готовы начать проект или нужна консультация?</b>
+        <span>Отправьте файлы или описание задачи через форму — мы быстро рассчитаем стоимость и сроки.</span>
+      </div>
+      <a class="btn primary" href="#contact">Перейти к форме заказа</a>
+    </div>
+
+    <!-- КОНТАКТЫ И ФОРМА -->
+    <section id="contact" class="contact">
+      <div class="card box reveal">
+        <h3>Контакты и информация</h3>
+        <p>
+          Самый удобный способ начать работу — заполнить форму заказа справа. Вы также можете связаться с нами напрямую.
+        </p>
+
+        <div class="kv">
+          <div><span>📞 Телефон</span><b id="phoneVal">+7 (___) ___-__-__</b></div>
+          <div><span>📍 Адрес</span><b>Дагестан • (укажите ваш адрес)</b></div>
+          <div><span>🕒 График работы</span><b>10:00 – 19:00, ежедневно</b></div>
+        </div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px">
+          <a class="btn small" href="#services">Все услуги</a>
+          <a class="btn small" href="#portfolio">Примеры работ</a>
+          <button class="btn small primary" type="button" id="scrollForm">Заполнить форму</button>
+        </div>
+      </div>
+
+      <div class="card box reveal">
+        <h3>Форма заказа (Яндекс.Формы)</h3>
+        <p>Прикрепите файлы, опишите задачу и оставьте контакты для обратной связи. Мы ответим в течение часа.</p>
+
+        <div class="iframeWrap" id="formWrap">
+          <!-- ВСТАВЬТЕ СЮДА ССЫЛКУ НА ВАШУ ЯНДЕКС.ФОРМУ -->
+          <iframe
+            src="PASTE_YOUR_YANDEX_FORM_IFRAME_URL_HERE"
+            title="Форма заказа"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <footer class="reveal">
+      <div>© <span id="year"></span> Салон печати и цифровых услуг • 3D / Фото / Гравировка / IT</div>
+      <div class="sep">Сделано с акцентом на качество, скорость и современный дизайн.</div>
+    </footer>
+  </main>
+
+  <!-- Плавающая кнопка -->
+  <div class="fab">
+    <div class="pill">Отправить файлы на расчёт</div>
+    <a class="btn primary icon" href="#contact" aria-label="Быстрый заказ">→</a>
+  </div>
+
+  <!-- Всплывающее уведомление -->
+  <div class="toast" id="toast">Готово</div>
+
+  <!-- Модальное окно портфолио -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Просмотр работы">
+      <div class="modal-top">
+        <div>
+          <b id="mTitle">Работа</b>
+          <div><span id="mSub">Описание</span></div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn icon" id="mPrev" type="button" aria-label="Предыдущая">←</button>
+          <button class="btn icon" id="mNext" type="button" aria-label="Следующая">→</button>
+          <button class="btn icon" id="mClose" type="button" aria-label="Закрыть">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-preview" id="mPreview">
+          <div class="nav-arrows">
+            <button type="button" id="mPrev2" aria-label="Предыдущая">←</button>
+            <button type="button" id="mNext2" aria-label="Следующая">→</button>
+          </div>
+        </div>
+        <div class="modal-caption">
+          <div id="mDesc">—</div>
+          <div id="mIndex">1 / 6</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== ИНТЕРАКТИВНАЯ САКУРА (Canvas) =====
+    const canvas = document.getElementById('sakuraCanvas');
+    const ctx = canvas.getContext('2d');
+    let petals = [];
+    let mouse = { x: 0, y: 0, down: false };
+
+    // Настройка canvas
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Класс лепестка сакуры
+    class Petal {
+      constructor() {
+        this.reset();
+        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * canvas.width;
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.size = Math.random() * 5 + 3;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 + 1;
+        this.angle = 0;
+        this.angleSpeed = Math.random() * 0.05 - 0.025;
+        this.color = `rgba(255, ${180 + Math.random() * 75}, ${200 + Math.random() * 55}, ${0.4 + Math.random() * 0.3})`;
+        this.wobble = Math.random() * Math.PI * 2;
+        this.wobbleSpeed = Math.random() * 0.05;
+      }
+
+      update() {
+        // Физика падения
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.angle += this.angleSpeed;
+        this.wobble += this.wobbleSpeed;
+
+        // Лёгкое колебание
+        this.x += Math.sin(this.wobble) * 0.3;
+
+        // Реакция на курсор
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const force = mouse.down ? 120 : 80;
+
+        if (distance < force) {
+          const angle = Math.atan2(dy, dx);
+          const power = (force - distance) / force;
+          this.x += Math.cos(angle) * power * 5;
+          this.y += Math.sin(angle) * power * 5;
+        }
+
+        // Сброс, если улетел за экран
+        if (this.y > canvas.height + 20 || this.x < -20 || this.x > canvas.width + 20) {
+          this.reset();
+          this.y = -20;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        // Рисуем простой лепесток (эллипс)
+        ctx.ellipse(0, 0, this.size * 1.5, this.size, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Создаём лепестки
+    const petalCount = Math.min(100, Math.floor((window.innerWidth * window.innerHeight) / 15000));
+    for (let i = 0; i < petalCount; i++) {
+      petals.push(new Petal());
+    }
+
+    // Анимация
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      petals.forEach(petal => {
+        petal.update();
+        petal.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Отслеживание мыши
+    canvas.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    canvas.addEventListener('mousedown', () => { mouse.down = true; });
+    canvas.addEventListener('mouseup', () => { mouse.down = false; });
+    canvas.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+    // ===== ОСНОВНОЙ СКРИПТ =====
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2000);
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Укажите ваш телефон здесь
+    const phone = "+7 (___) ___-__-__";
+    document.getElementById("phoneVal").textContent = phone;
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(phone.replace(/\s|\(|\)|-/g, ""));
+        toast("Контакт скопирован в буфер");
+      } catch (e) {
+        toast("Скопируйте номер вручную: " + phone);
+      }
+    });
+
+    document.getElementById("scrollForm").addEventListener("click", () => {
+      document.getElementById("formWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    // ===== Появление элементов при скролле =====
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // ===== Активная навигация =====
+    const navLinks = document.querySelectorAll('.links a');
+    const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = '#' + entry.target.id;
+          navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === id));
+        }
+      });
+    }, { threshold: 0.3, rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(section => navObserver.observe(section));
+
+    // ===== FAQ аккордеон =====
+    const qaButtons = document.querySelectorAll('.qa button');
+    qaButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const qa = button.closest('.qa');
+        const isOpen = qa.classList.contains('open');
+        const ans = qa.querySelector('.ans');
+
+        // Закрываем все
+        document.querySelectorAll('.qa').forEach(item => {
+          item.classList.remove('open');
+          item.querySelector('.ans').style.maxHeight = '0px';
+        });
+
+        // Открываем текущий, если был закрыт
+        if (!isOpen) {
+          qa.classList.add('open');
+          ans.style.maxHeight = ans.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // ===== Модальное окно портфолио =====
+    const modal = document.getElementById('modal');
+    const mTitle = document.getElementById('mTitle');
+    const mSub = document.getElementById('mSub');
+    const mDesc = document.getElementById('mDesc');
+    const mIndex = document.getElementById('mIndex');
+    const shots = document.querySelectorAll('.shot');
+    let currentShot = 0;
+
+    function updateModal() {
+      const shot = shots[currentShot];
+      mTitle.textContent = shot.dataset.title || 'Работа';
+      mDesc.textContent = shot.dataset.desc || '—';
+      mIndex.textContent = `${currentShot + 1} / ${shots.length}`;
+    }
+
+    function openModal(index) {
+      currentShot = index;
+      updateModal();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    function nextShot() {
+      currentShot = (currentShot + 1) % shots.length;
+      updateModal();
+    }
+
+    function prevShot() {
+      currentShot = (currentShot - 1 + shots.length) % shots.length;
+      updateModal();
+    }
+
+    shots.forEach((shot, index) => {
+      shot.addEventListener('click', () => openModal(index));
+    });
+
+    document.getElementById('mClose').addEventListener('click', closeModal);
+    document.getElementById('mNext').addEventListener('click', nextShot);
+    document.getElementById('mPrev').addEventListener('click', prevShot);
+    document.getElementById('mNext2').addEventListener('click', nextShot);
+    document.getElementById('mPrev2').addEventListener('click', prevShot);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowRight') nextShot();
+      if (e.key === 'ArrowLeft') prevShot();
+    });
+
+    // Свайпы для модального окна (на мобильных)
+    let touchStartX = 0;
+    modal.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    modal.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? nextShot() : prevShot();
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
