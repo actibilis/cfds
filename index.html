@@ -4,276 +4,1227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actibilis | Копи-центр и цифровые услуги</title>
-
     <style>
         :root {
             --bg-primary: #0a0a14;
             --bg-secondary: #121220;
             --accent-primary: #6d5acf;
             --accent-secondary: #2a9d8f;
-            --text-primary: rgba(255,255,255,0.95);
-            --text-secondary: rgba(255,255,255,0.75);
-            --transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+            --accent-tertiary: #e76f51;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --card-bg: rgba(25, 25, 40, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --perspective: 1000px;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
+            min-height: 100vh;
             overflow-x: hidden;
+            perspective: var(--perspective);
+            transform-style: preserve-3d;
         }
-
+        /* Фоновые слои для глубины с частицами */
         .bg-layer {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
             z-index: 0;
-            pointer-events: none;
+            opacity: 0.6; /* Прозрачность для иллюзии пространства */
         }
-
         .bg-layer-1 {
-            background: radial-gradient(circle at 20% 30%, rgba(109,90,207,0.12), transparent 40%);
+            background: radial-gradient(circle at 20% 30%, rgba(109, 90, 207, 0.1) 0%, transparent 40%);
         }
-
         .bg-layer-2 {
-            background: radial-gradient(circle at 80% 70%, rgba(42,157,143,0.10), transparent 40%);
+            background: radial-gradient(circle at 80% 70%, rgba(42, 157, 143, 0.08) 0%, transparent 40%);
         }
-
-        #sakuraCanvas {
+        /* Canvas для фоновых частиц (иллюзия бесконечного пространства) */
+        #particleCanvas {
             position: fixed;
-            inset: 0;
-            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+            z-index: 1;
+            opacity: 0.3; /* Легкая прозрачность */
         }
-
+        /* Canvas для лепестков роз */
+        #roseCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        /* Основной контейнер */
         .container {
             position: relative;
             z-index: 3;
-            transition: transform 0.1s linear;
+            transform-style: preserve-3d;
         }
-
-        header {
+        /* Хедер с 3D эффектом */
+        .header {
             position: fixed;
             top: 0;
             width: 100%;
+            z-index: 1000;
+            padding: 1.2rem 0;
             backdrop-filter: blur(20px);
-            background: rgba(10,10,20,0.9);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            z-index: 100;
+            background: rgba(10, 10, 20, 0.6); /* Увеличена прозрачность */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateZ(80px); /* Выше для 5D */
+            transform-style: preserve-3d;
         }
-
-        nav {
+        .nav-container {
             max-width: 1200px;
-            margin: auto;
-            padding: 1rem 2rem;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transform-style: preserve-3d;
         }
-
+        /* Логотип */
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
             color: var(--accent-primary);
             text-decoration: none;
+            transform: translateZ(100px); /* Ещё выше для глубины */
+            transition: var(--transition);
+            position: relative;
         }
-
+        .logo:hover {
+            color: var(--accent-secondary);
+            transform: translateZ(120px) scale(1.1);
+            text-shadow: 0 0 20px var(--accent-primary);
+        }
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: width 0.3s ease;
+        }
+        .logo:hover::after {
+            width: 100%;
+        }
+        /* Кнопки навигации - как на воздухе */
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            transform-style: preserve-3d;
+        }
+        /* Общий стиль кнопок */
         .btn {
-            padding: 0.8rem 1.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 2rem;
             border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.15);
-            background: rgba(255,255,255,0.08);
-            color: white;
             text-decoration: none;
             transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Легкая граница */
+            cursor: pointer;
+            backdrop-filter: blur(15px); /* Усилен для стекла */
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(109, 90, 207, 0.2); /* Свечение для 5D */
         }
-
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.7s ease;
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
         .btn-primary {
-            background: linear-gradient(135deg,var(--accent-primary),var(--accent-secondary));
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 0 20px 40px rgba(109, 90, 207, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateZ(70px); /* Выше для воздуха */
         }
-
-        .btn:hover {
-            transform: translateY(-3px);
+        .btn-primary:hover {
+            transform: translateZ(90px) translateY(-8px) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(109, 90, 207, 0.5), 0 0 80px rgba(109, 90, 207, 0.3);
         }
-
-        section {
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05); /* Более прозрачный */
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateZ(60px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateZ(80px) translateY(-8px) rotateY(-5deg);
+            border-color: var(--accent-primary);
+        }
+        /* Герой-секция */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 3;
+            transform-style: preserve-3d;
+        }
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            transform-style: preserve-3d;
+        }
+        /* Главный заголовок с 3D-эффектом */
+        .hero-title {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            cursor: default;
+            line-height: 1;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: var(--transition);
+        }
+        .title-wrapper {
+            display: inline-block;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .title-letters {
+            display: inline-block;
+            transition: var(--transition);
+            color: var(--text-primary);
+            position: relative;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+        }
+        .hero-title:hover .title-letters {
+            transform: translateZ(50px) rotateX(10deg) rotateY(10deg) scale(1.2);
+            color: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            text-shadow: 0 10px 30px rgba(109, 90, 207, 0.5);
+        }
+        /* Доработанная цитата (история) - после Actibilis, с интерактивностью */
+        .story-box {
+            max-width: 700px;
+            margin: 1rem auto 4rem;
+            padding: 2.5rem;
+            border-radius: 24px;
+            background: rgba(25, 25, 40, 0.6); /* Прозрачнее */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            transform: translateZ(50px);
+            transform-style: preserve-3d;
+            transition: var(--transition);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+        .story-box:hover {
+            transform: translateZ(70px) translateY(-10px) rotateX(5deg);
+            border-color: var(--accent-primary);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 0 0 50px rgba(109, 90, 207, 0.2);
+            background: linear-gradient(135deg, rgba(109, 90, 207, 0.2), rgba(42, 157, 143, 0.2));
+        }
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+            transform: translateZ(30px);
+            transition: var(--transition);
+        }
+        .story-box:hover .story-text {
+            transform: translateZ(40px) scale(1.05);
+            color: var(--text-primary);
+        }
+        /* Кнопки действий */
+        .hero-actions {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            transform-style: preserve-3d;
+        }
+        /* Секция услуг с parallax скроллом */
+        .services-section {
             padding: 8rem 2rem;
             max-width: 1200px;
-            margin: auto;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease; /* Для скролл-эффекта */
         }
-
-        .hero {
-            min-height: 100vh;
+        /* Заголовки секций с вау-эффектом */
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            text-align: center;
+            margin-bottom: 5rem;
+            color: var(--text-primary);
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: default;
+            transition: var(--transition);
+        }
+        .section-title-inner {
+            display: inline-block;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section-title:hover .section-title-inner {
+            transform: translateZ(40px) rotateX(8deg) rotateY(8deg) scale(1.15);
+            color: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            text-shadow: 0 8px 25px rgba(109, 90, 207, 0.4);
+        }
+        /* Сетка услуг */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            transform-style: preserve-3d;
+        }
+        /* Карточки услуг */
+        .service-card {
+            background: rgba(30, 30, 50, 0.6); /* Прозрачнее */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: var(--transition);
+            backdrop-filter: blur(20px);
+            transform: translateZ(40px);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.7s ease;
+        }
+        .service-card:hover::before {
+            left: 100%;
+        }
+        .service-card:hover {
+            transform: translateZ(70px) translateY(-15px) rotateX(8deg) rotateY(5deg);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow), 0 0 50px rgba(109, 90, 207, 0.3);
+        }
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: clamp(3rem,10vw,7rem);
-            font-weight: 900;
-        }
-
-        .story {
-            max-width: 700px;
-            margin: 3rem auto;
-            padding: 2rem;
-            background: rgba(25,25,40,0.7);
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .services {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: rgba(30,30,50,0.7);
-            padding: 2rem;
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            box-shadow: 0 15px 30px rgba(109, 90, 207, 0.3);
+            transform: translateZ(50px);
             transition: var(--transition);
         }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent-primary);
+        .service-card:hover .service-icon {
+            transform: translateZ(60px) rotate(360deg);
         }
-
-        footer {
-            text-align: center;
-            padding: 3rem 1rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
+        .service-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            transform: translateZ(40px);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+        }
+        .service-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: width 0.3s ease;
+        }
+        .service-card:hover .service-name {
+            transform: translateZ(50px) scale(1.1);
+            color: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        }
+        .service-card:hover .service-name::after {
+            width: 100%;
+        }
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: var(--text-secondary);
+            transform: translateZ(30px);
+            transition: var(--transition);
         }
-
-        @media(max-width:768px){
-            nav { flex-direction: column; gap: 1rem; }
+        .service-card:hover .price-item {
+            transform: translateZ(35px);
+        }
+        .price-item:last-child {
+            border-bottom: none;
+        }
+        .price-value {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+        /* Секция контактов */
+        .contacts-section {
+            padding: 8rem 2rem;
+            background: var(--bg-secondary);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        .contacts-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+        }
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 4rem;
+            transform-style: preserve-3d;
+        }
+        /* Кнопка WhatsApp */
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.3);
+            transform: translateZ(50px);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        .whatsapp-btn:hover {
+            transform: translateZ(70px) translateY(-5px) rotateY(5deg);
+            box-shadow: 0 25px 50px rgba(37, 211, 102, 0.4), 0 0 60px rgba(37, 211, 102, 0.2);
+        }
+        .whatsapp-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.7s ease;
+        }
+        .whatsapp-btn:hover::before {
+            left: 100%;
+        }
+        /* Форма */
+        .form-container {
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 550px;
+            background: rgba(25, 25, 40, 0.6);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateZ(50px);
+            transform-style: preserve-3d;
+            transition: var(--transition);
+        }
+        .form-container:hover {
+            transform: translateZ(70px) translateY(-10px) rotateX(5deg);
+            border-color: var(--accent-primary);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.4), 0 0 60px rgba(109, 90, 207, 0.2);
+        }
+        /* Футер */
+        .footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d;
+        }
+        /* Анимации появления */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) translateZ(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateZ(0);
+            }
+        }
+        .animate-fade-up {
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero-title {
+                font-size: clamp(3rem, 15vw, 5rem);
+            }
+            .story-box {
+                padding: 2rem;
+                margin: 2rem auto 3rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .hero-actions .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .service-card {
+                padding: 2rem;
+            }
+            .contacts-grid {
+                gap: 3rem;
+            }
+            .form-container {
+                height: 500px;
+            }
+        }
+        @media (max-width: 480px) {
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            .story-box {
+                padding: 1.5rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
-
 <body>
-
-<div class="bg-layer bg-layer-1"></div>
-<div class="bg-layer bg-layer-2"></div>
-<canvas id="sakuraCanvas"></canvas>
-
-<div class="container">
-
-<header>
-    <nav>
-        <a class="logo" href="#">Actibilis</a>
-        <div>
-            <a class="btn" href="#services">Услуги</a>
-            <a class="btn btn-primary" href="#contact">Контакты</a>
-        </div>
-    </nav>
-</header>
-
-<section class="hero">
-    <div>
-        <h1>Actibilis</h1>
-        <div class="story">
-            «Место, где технологии служат людям, а не наоборот»
-        </div>
-        <a class="btn btn-primary" href="#services">Наши услуги</a>
+    <!-- Фоновые слои для глубины -->
+    <div class="bg-layer bg-layer-1"></div>
+    <div class="bg-layer bg-layer-2"></div>
+    
+    <!-- Canvas для фоновых частиц -->
+    <canvas id="particleCanvas"></canvas>
+    
+    <!-- Canvas для лепестков роз -->
+    <canvas id="roseCanvas"></canvas>
+    <div class="container">
+        <!-- Хедер -->
+        <header class="header">
+            <nav class="nav-container">
+                <a href="#" class="logo">Actibilis</a>
+                <div class="nav-buttons">
+                    <a href="#services" class="btn btn-secondary">Услуги</a>
+                    <a href="#contact" class="btn btn-primary">Контакты</a>
+                </div>
+            </nav>
+        </header>
+        <!-- Герой с заголовком -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title animate-fade-up">
+                    <div class="title-wrapper">
+                        <span class="title-letters" id="interactiveTitle">Actibilis</span>
+                    </div>
+                </h1>
+                
+                <div class="story-box animate-fade-up" style="animation-delay: 0.2s;">
+                    <p class="story-text">
+                        "В мире, где технологии часто усложняют жизнь, Actibilis становится мостом между цифровым и реальным. Мы заметили, как люди тратят время на простые задачи: печать документов, обработку фото или настройку ПК. Actibilis — это место, где инновации упрощают повседневность, делая технологии вашим союзником, а не препятствием. Добро пожаловать в будущее удобства!"
+                    </p>
+                </div>
+                <div class="hero-actions animate-fade-up" style="animation-delay: 0.4s;">
+                    <a href="#services" class="btn btn-primary">Наши услуги</a>
+                    <a href="#contact" class="btn btn-secondary">Связаться</a>
+                </div>
+            </div>
+        </section>
+        <!-- Услуги -->
+        <section id="services" class="services-section">
+            <h2 class="section-title animate-fade-up">
+                <div class="section-title-inner">
+                    Наши услуги
+                </div>
+            </h2>
+            
+            <div class="services-grid">
+                <!-- Печать и документы -->
+                <div class="service-card animate-fade-up">
+                    <div class="service-icon">🖨️</div>
+                    <h3 class="service-name">Печать и документы</h3>
+                    <div>
+                        <div class="price-item">
+                            <span>Фото на документы (3×4, 4 шт.)</span>
+                            <span class="price-value">300 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Ксерокопия ч/б</span>
+                            <span class="price-value">10 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Ксерокопия цветная</span>
+                            <span class="price-value">20 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Ламинация А4</span>
+                            <span class="price-value">70 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Набор текста (А4)</span>
+                            <span class="price-value">60 ₽</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3D и гравировка -->
+                <div class="service-card animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="service-icon">🔨</div>
+                    <h3 class="service-name">3D-печать и гравировка</h3>
+                    <div>
+                        <div class="price-item">
+                            <span>3D-печать</span>
+                            <span class="price-value">от 13 ₽/г</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Гравировка фото на дереве</span>
+                            <span class="price-value">от 300 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Арт-постеры</span>
+                            <span class="price-value">от 50 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Закладки в книги</span>
+                            <span class="price-value">25 ₽/шт</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- IT-услуги -->
+                <div class="service-card animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="service-icon">💻</div>
+                    <h3 class="service-name">IT-услуги</h3>
+                    <div>
+                        <div class="price-item">
+                            <span>Установка Windows</span>
+                            <span class="price-value">1500 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Настройка / чистка Windows</span>
+                            <span class="price-value">300-400 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Установка программ</span>
+                            <span class="price-value">от 500 ₽</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Восстановление фото</span>
+                            <span class="price-value">от 250 ₽</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Контакты -->
+        <section id="contact" class="contacts-section">
+            <div class="contacts-container">
+                <h2 class="section-title animate-fade-up">
+                    <div class="section-title-inner">
+                        Контакты
+                    </div>
+                </h2>
+                
+                <div class="contacts-grid">
+                    <div>
+                        <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem; transform: translateZ(40px);">Наш адрес</h3>
+                        <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.1rem;">
+                            <p style="margin-bottom: 1rem; transform: translateZ(30px);">📍 Республика Дагестан</p>
+                            <p style="margin-bottom: 1rem; transform: translateZ(30px);">Каякентский район, село Первомайское</p>
+                            <p style="margin-bottom: 1rem; transform: translateZ(30px);">Улица Пионерская, дом 60</p>
+                            <p style="margin-top: 2rem; color: var(--accent-secondary); font-weight: 600; transform: translateZ(30px);">
+                                🕒 Ежедневно 09:00 - 19:00
+                            </p>
+                        </div>
+                        
+                        <div style="margin-top: 3rem;">
+                            <h4 style="margin-bottom: 1rem; color: var(--accent-primary); transform: translateZ(40px);">Свяжитесь с нами:</h4>
+                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                                <a href="https://wa.me/79094787974" target="_blank" class="whatsapp-btn">
+                                    <span style="font-size: 1.4rem;">📱</span>
+                                    WhatsApp: +7 909 478-79-74
+                                </a>
+                                <button class="btn btn-secondary" onclick="copyContact()" style="justify-content: center;">
+                                    📋 Скопировать контакты
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem; transform: translateZ(40px);">Онлайн-заказ</h3>
+                        <div class="form-container">
+                            <iframe
+                                src="https://forms.yandex.ru/u/69529a061f1eb554426a9176"
+                                style="width: 100%; height: 100%; border: none;"
+                                title="Форма заказа"
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem; text-align: center; transform: translateZ(30px);">
+                            Или напишите нам в WhatsApp для быстрого ответа
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Футер -->
+        <footer class="footer">
+            <div style="max-width: 1200px; margin: 0 auto;">
+                <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--accent-primary); transform: translateZ(50px);">
+                    Actibilis
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem; transform: translateZ(40px);">
+                    Место, где технологии служат людям
+                </p>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <a href="#services" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(30px);">Услуги</a>
+                    <a href="#contact" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(30px);">Контакты</a>
+                    <a href="https://wa.me/79094787974" target="_blank" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transform: translateZ(30px);">WhatsApp</a>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; opacity: 0.7; transform: translateZ(30px);">
+                    © 2024 Actibilis. Все права защищены.
+                </p>
+            </div>
+        </footer>
     </div>
-</section>
-
-<section id="services">
-    <h2 style="text-align:center;margin-bottom:3rem;">Наши услуги</h2>
-    <div class="services">
-        <div class="card">🖨️ Печать, копии, ламинация</div>
-        <div class="card">🔨 3D-печать и гравировка</div>
-        <div class="card">💻 IT-услуги и восстановление данных</div>
-    </div>
-</section>
-
-<section id="contact">
-    <h2 style="text-align:center;margin-bottom:3rem;">Контакты</h2>
-    <p style="text-align:center;">
-        📍 Республика Дагестан, с. Первомайское<br>
-        📱 +7 909 478-79-74<br>
-        🕒 09:00–19:00
-    </p>
-    <div style="text-align:center;margin-top:2rem;">
-        <button class="btn" onclick="copyContact()">📋 Скопировать контакты</button>
-    </div>
-</section>
-
-<footer>
-    © 2024 Actibilis
-</footer>
-
-</div>
-
-<script>
-/* === КОПИРОВАНИЕ КОНТАКТОВ === */
-function copyContact(){
-    const text = `Actibilis
-Республика Дагестан
-с. Первомайское
-Телефон: +7 909 478-79-74
-09:00–19:00`;
-    navigator.clipboard.writeText(text)
-        .then(()=>alert('Контакты скопированы'))
-        .catch(()=>alert('Ошибка копирования'));
-}
-
-/* === 3D ДВИЖЕНИЕ === */
-document.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 6;
-    const y = (e.clientY / window.innerHeight - 0.5) * 6;
-    document.querySelector('.container').style.transform =
-        `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
-});
-
-/* === САКУРА (ОПТИМИЗИРОВАННАЯ) === */
-const canvas = document.getElementById('sakuraCanvas');
-const ctx = canvas.getContext('2d');
-let petals = [];
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-
-function addPetal(){
-    petals.push({
-        x: Math.random()*canvas.width,
-        y: -10,
-        r: Math.random()*5+4,
-        s: Math.random()*1+0.5
-    });
-    if(petals.length>30) petals.shift();
-}
-
-function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    petals.forEach(p=>{
-        p.y+=p.s;
-        ctx.fillStyle='rgba(255,182,193,0.6)';
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fill();
-    });
-    requestAnimationFrame(draw);
-}
-
-setInterval(addPetal,400);
-draw();
-
-window.addEventListener('resize',()=>{
-    canvas.width=innerWidth;
-    canvas.height=innerHeight;
-});
-</script>
-
+    <script>
+        // Система фоновых частиц для иллюзии пространства
+        class ParticleSystem {
+            constructor() {
+                this.canvas = document.getElementById('particleCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.maxParticles = 200;
+                this.lastTime = 0;
+                this.init();
+            }
+            init() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            createParticle() {
+                if (this.particles.length < this.maxParticles) {
+                    const particle = {
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        size: Math.random() * 2 + 0.5,
+                        speedX: (Math.random() - 0.5) * 0.5,
+                        speedY: (Math.random() - 0.5) * 0.5,
+                        color: `hsla(${Math.random() * 360}, 50%, 80%, ${Math.random() * 0.5 + 0.1})`,
+                        blur: Math.random() * 5 + 1 // Для глубины
+                    };
+                    this.particles.push(particle);
+                }
+            }
+            update(currentTime) {
+                const delta = currentTime - this.lastTime;
+                this.lastTime = currentTime;
+                if (Math.random() < 0.1) this.createParticle();
+                this.particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    if (p.x < 0 || p.x > this.canvas.width) p.speedX *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.speedY *= -1;
+                });
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.particles.forEach(p => {
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.filter = `blur(${p.blur}px)`;
+                    this.ctx.fill();
+                });
+                this.ctx.filter = 'none';
+            }
+            animate(time) {
+                this.update(time);
+                this.draw();
+                requestAnimationFrame(t => this.animate(t));
+            }
+        }
+        // Продвинутая система лепестков роз
+        class RosePetalsSystem {
+            constructor() {
+                this.canvas = document.getElementById('roseCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.petals = [];
+                this.maxPetals = 50;
+                this.stickElements = [];
+                this.mouse = { x: 0, y: 0 };
+                this.lastTime = 0;
+                
+                this.init();
+            }
+            init() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.canvas.addEventListener('mousemove', (e) => {
+                    this.mouse.x = e.clientX;
+                    this.mouse.y = e.clientY;
+                });
+                // Расширенные элементы для прилипания (добавлены заголовки, подзаголовки)
+                this.collectStickElements();
+            }
+            collectStickElements() {
+                this.stickElements = Array.from(document.querySelectorAll(
+                    '.btn, .service-card, .story-box, .logo, .form-container, .hero-title, .section-title, .service-name'
+                ));
+            }
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            createPetal() {
+                if (this.petals.length < this.maxPetals) {
+                    const petal = {
+                        // Начинаем с правого верхнего угла
+                        x: this.canvas.width - Math.random() * 100,
+                        y: Math.random() * 50,
+                        size: Math.random() * 8 + 4,
+                        speedX: -(Math.random() * 2 + 1), // Влево
+                        speedY: Math.random() * 3 + 1.5, // Вниз, для диагонали
+                        rotation: Math.random() * Math.PI * 2,
+                        rotationSpeed: (Math.random() - 0.5) * 0.08,
+                        color: `hsla(${Math.random() * 20 + 340}, 80%, 60%, ${Math.random() * 0.4 + 0.4})`, // Розовые/красные тона
+                        life: 1,
+                        decay: 0.0002,
+                        state: 'falling',
+                        stickTime: 0,
+                        maxStickTime: 4000 + Math.random() * 6000, // 4-10 секунд
+                        stickElement: null,
+                        sway: Math.random() * Math.PI * 2,
+                        swaySpeed: Math.random() * 0.04 + 0.02
+                    };
+                    this.petals.push(petal);
+                }
+            }
+            checkCollision(petal, element) {
+                const rect = element.getBoundingClientRect();
+                return (
+                    petal.x >= rect.left &&
+                    petal.x <= rect.right &&
+                    petal.y >= rect.top &&
+                    petal.y <= rect.bottom &&
+                    petal.state === 'falling'
+                );
+            }
+            update(currentTime) {
+                const delta = currentTime - this.lastTime;
+                this.lastTime = currentTime;
+                // Создаем новые лепестки
+                if (delta > 80 && Math.random() < 0.15) {
+                    this.createPetal();
+                }
+                // Обновляем существующие
+                this.petals = this.petals.filter(petal => {
+                    if (petal.state === 'falling') {
+                        petal.x += petal.speedX;
+                        petal.y += petal.speedY;
+                        petal.rotation += petal.rotationSpeed;
+                        petal.sway += petal.swaySpeed;
+                        
+                        petal.x += Math.sin(petal.sway) * 0.6;
+                        petal.speedY += 0.015; // Гравитация
+                        
+                        // Проверка прилипания
+                        if (Math.random() < 0.03) {
+                            for (const element of this.stickElements) {
+                                if (this.checkCollision(petal, element)) {
+                                    petal.state = 'sticking';
+                                    petal.stickElement = element;
+                                    petal.stickOffsetX = petal.x - element.getBoundingClientRect().left;
+                                    petal.stickOffsetY = petal.y - element.getBoundingClientRect().top;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // Реакция на мышь
+                        const dx = petal.x - this.mouse.x;
+                        const dy = petal.y - this.mouse.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < 150) {
+                            const force = (150 - distance) / 150;
+                            const angle = Math.atan2(dy, dx);
+                            petal.x += Math.cos(angle) * force * 5;
+                            petal.y += Math.sin(angle) * force * 5;
+                        }
+                        
+                        // Сброс за экраном
+                        if (petal.y > this.canvas.height + 100 || petal.x < -100) {
+                            return false;
+                        }
+                    } else if (petal.state === 'sticking') {
+                        if (petal.stickElement) {
+                            const rect = petal.stickElement.getBoundingClientRect();
+                            petal.x = rect.left + petal.stickOffsetX;
+                            petal.y = rect.top + petal.stickOffsetY;
+                            petal.stickTime += delta;
+                            if (petal.stickTime > petal.maxStickTime) {
+                                petal.state = 'fading';
+                            }
+                        }
+                    } else if (petal.state === 'fading') {
+                        petal.life -= 0.008;
+                        if (petal.life <= 0) {
+                            return false;
+                        }
+                    }
+                    petal.life -= petal.decay;
+                    return petal.life > 0;
+                });
+            }
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.petals.forEach(petal => {
+                    this.ctx.save();
+                    this.ctx.translate(petal.x, petal.y);
+                    this.ctx.rotate(petal.rotation);
+                    this.ctx.globalAlpha = petal.life * (petal.state === 'fading' ? 0.6 : 1);
+                    this.ctx.fillStyle = petal.color;
+                    
+                    // Форма лепестка розы (овальная, изогнутая)
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, 0);
+                    this.ctx.bezierCurveTo(petal.size * 0.5, -petal.size * 0.8, petal.size * 1.2, -petal.size * 0.3, petal.size, 0);
+                    this.ctx.bezierCurveTo(petal.size * 1.2, petal.size * 0.3, petal.size * 0.5, petal.size * 0.8, 0, 0);
+                    this.ctx.closePath();
+                    this.ctx.fill();
+                    
+                    this.ctx.restore();
+                });
+            }
+            animate(time) {
+                this.update(time);
+                this.draw();
+                requestAnimationFrame(t => this.animate(t));
+            }
+        }
+        // Интерактивный заголовок с усиленным вау-эффектом
+        function initInteractiveTitle() {
+            const title = document.getElementById('interactiveTitle');
+            const text = 'Actibilis';
+            
+            title.innerHTML = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = text[i];
+                span.style.display = 'inline-block';
+                span.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+                span.style.cursor = 'default';
+                span.style.transformOrigin = 'center center';
+                
+                title.appendChild(span);
+            }
+            
+            const letters = title.children;
+            
+            title.addEventListener('mousemove', (e) => {
+                const rect = title.getBoundingClientRect();
+                
+                Array.from(letters).forEach((letter, index) => {
+                    const letterRect = letter.getBoundingClientRect();
+                    const letterCenterX = letterRect.left + letterRect.width / 2;
+                    const letterCenterY = letterRect.top + letterRect.height / 2;
+                    
+                    const distanceX = e.clientX - letterCenterX;
+                    const distanceY = e.clientY - letterCenterY;
+                    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                    
+                    const maxDistance = 180;
+                    const influence = Math.max(0, 1 - distance / maxDistance);
+                    
+                    if (influence > 0) {
+                        const rotateX = (distanceY / 40) * influence;
+                        const rotateY = -(distanceX / 40) * influence;
+                        const translateZ = 40 * influence;
+                        const scale = 1 + 0.3 * influence;
+                        
+                        letter.style.transform = `translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+                        letter.style.color = `hsl(${280 + influence * 30}, 80%, 90%)`;
+                        letter.style.textShadow = `0 0 ${20 * influence}px hsl(${280 + influence * 30}, 80%, 70%)`;
+                    } else {
+                        letter.style.transform = '';
+                        letter.style.color = '';
+                        letter.style.textShadow = '';
+                    }
+                });
+            });
+            
+            title.addEventListener('mouseleave', () => {
+                Array.from(letters).forEach(letter => {
+                    letter.style.transform = '';
+                    letter.style.color = '';
+                    letter.style.textShadow = '';
+                });
+            });
+        }
+        // Интерактивность для всех заголовков и подзаголовков с вау
+        function initSectionTitles() {
+            const titles = document.querySelectorAll('.section-title-inner, .service-name, .story-text');
+            
+            titles.forEach(title => {
+                title.addEventListener('mousemove', (e) => {
+                    const rect = title.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    const rotateX = ((centerY - y) / centerY) * 8;
+                    const translateZ = 30;
+                    
+                    title.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(1.1)`;
+                    title.style.color = `linear-gradient(135deg, hsl(280, 80%, 85%), hsl(170, 80%, 85%))`;
+                    title.style.textShadow = `0 5px 15px rgba(109, 90, 207, 0.5)`;
+                });
+                
+                title.addEventListener('mouseleave', () => {
+                    title.style.transform = '';
+                    title.style.color = '';
+                    title.style.textShadow = '';
+                });
+            });
+        }
+        // 3D эффект для всего сайта при движении мыши
+        function init3DEffect() {
+            const container = document.querySelector('.container');
+            
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 12;
+                const y = (e.clientY / window.innerHeight - 0.5) * 12;
+                
+                container.style.transform = `perspective(var(--perspective)) rotateY(${x}deg) rotateX(${-y}deg)`;
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                container.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+            });
+        }
+        // Анимации при скролле с необычным эффектом (параллакс + 3D поворот)
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '100px'
+            });
+            
+            document.querySelectorAll('.animate-fade-up').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+            
+            // Параллакс + 3D для фона и секций
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const bgLayers = document.querySelectorAll('.bg-layer');
+                const sections = document.querySelectorAll('section');
+                
+                bgLayers.forEach((layer, index) => {
+                    const speed = 0.15 + (index * 0.08);
+                    layer.style.transform = `translateY(${scrolled * speed}px) translateZ(-${scrolled * 0.05}px)`;
+                    layer.style.filter = `blur(${scrolled * 0.002}px)`; // Размытие для глубины
+                });
+                
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    const rotateX = (rect.top / window.innerHeight) * 5; // Необычный поворот
+                    section.style.transform = `translateZ(-${scrolled * 0.02}px) rotateX(${rotateX}deg)`;
+                });
+            });
+        }
+        // Копирование контактов
+        function copyContact() {
+            const contactInfo = `Actibilis - Копи-центр\n\n📍 Адрес:\nРеспублика Дагестан, Каякентский район\nСело Первомайское, ул. Пионерская, 60\n\n📞 WhatsApp: +7 909 478-79-74\n\n🕒 График работы:\nЕжедневно 09:00 - 19:00`;
+            
+            navigator.clipboard.writeText(contactInfo).then(() => {
+                showNotification('✅ Контакты скопированы');
+            }).catch(err => {
+                console.error('Ошибка копирования:', err);
+                showNotification('❌ Ошибка копирования');
+            });
+        }
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                background: rgba(25, 25, 40, 0.95);
+                color: var(--text-primary);
+                padding: 1.2rem 2rem;
+                border-radius: 15px;
+                z-index: 10000;
+                animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                font-weight: 600;
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(109, 90, 207, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                max-width: 350px;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Запускаем фоновые частицы
+            const particles = new ParticleSystem();
+            requestAnimationFrame(t => particles.animate(t));
+            
+            // Запускаем лепестки роз
+            const roses = new RosePetalsSystem();
+            requestAnimationFrame(t => roses.animate(t));
+            
+            // Инициализируем интерактивные элементы
+            initInteractiveTitle();
+            initSectionTitles();
+            init3DEffect();
+            initScrollAnimations();
+            
+            // Добавляем стили для анимаций
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%) translateZ(-100px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0) translateZ(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0) translateZ(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%) translateZ(-100px);
+                        opacity: 0;
+                    }
+                }
+                
+                @media (max-width: 768px) {
+                    .notification {
+                        top: 20px;
+                        right: 20px;
+                        left: 20px;
+                        max-width: none;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Мобильная оптимизация
+            if ('ontouchstart' in window) {
+                document.documentElement.style.touchAction = 'manipulation';
+                document.documentElement.style.webkitTapHighlightColor = 'transparent';
+                
+                // Уменьшаем интенсивность 3D на мобильных
+                document.removeEventListener('mousemove', init3DEffect);
+            }
+            
+            // Обновляем элементы для прилипания при изменении DOM
+            const observer = new MutationObserver(() => {
+                roses.collectStickElements();
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    </script>
 </body>
 </html>
