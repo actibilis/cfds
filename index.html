@@ -6,17 +6,20 @@
     <title>Actibilis | Салон цифровых услуг</title>
     <style>
         :root {
-            --bg-primary: #0a0a14;
-            --bg-secondary: #12121e;
-            --accent-primary: #9d4edd;
-            --accent-secondary: #ff6d91;
-            --accent-tertiary: #5ce1e6;
-            --text-primary: rgba(255, 255, 255, 0.95);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121c;
+            --accent-primary: #ff4db8;
+            --accent-secondary: #8b5cf6;
+            --accent-tertiary: #00e5ff;
+            --neon-pink: #ff2aa6;
+            --neon-purple: #a855f7;
+            --neon-cyan: #22d3ee;
+            --text-primary: rgba(255, 255, 255, 0.98);
             --text-secondary: rgba(255, 255, 255, 0.7);
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(20, 20, 40, 0.4);
             --card-border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -32,11 +35,12 @@
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(157, 78, 221, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 30%, rgba(255, 109, 145, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 50% 80%, rgba(92, 225, 230, 0.05) 0%, transparent 20%);
+                radial-gradient(circle at 10% 20%, rgba(255, 77, 184, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 90% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 50% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 30%);
         }
 
+        /* Плавающие частицы фона */
         .floating-particles {
             position: fixed;
             top: 0;
@@ -51,189 +55,234 @@
             position: absolute;
             border-radius: 50%;
             background: var(--accent-primary);
-            opacity: 0.3;
-            animation: float 15s infinite linear;
+            opacity: 0.2;
+            animation: float 20s infinite linear;
         }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(20px, 50px) rotate(90deg); }
-            50% { transform: translate(0, 100px) rotate(180deg); }
-            75% { transform: translate(-20px, 50px) rotate(270deg); }
+            33% { transform: translate(30px, 80px) rotate(120deg); }
+            66% { transform: translate(-20px, 120px) rotate(240deg); }
         }
 
-        /* Интерактивное название */
+        /* Интерактивное название с неоном */
         .hero-title {
             position: relative;
-            font-size: clamp(3rem, 10vw, 8rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
             text-align: center;
-            margin: 2rem 0;
+            margin: 3rem 0;
             cursor: default;
             z-index: 2;
+            text-shadow: 
+                0 0 10px rgba(255, 77, 184, 0.3),
+                0 0 20px rgba(139, 92, 246, 0.2),
+                0 0 30px rgba(0, 229, 255, 0.1);
         }
 
         .letter {
             display: inline-block;
             transition: var(--transition);
             position: relative;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            filter: drop-shadow(0 5px 15px rgba(255, 77, 184, 0.3));
         }
 
         .letter:hover {
-            transform: translateY(-10px) scale(1.2);
+            transform: translateY(-15px) scale(1.3) rotateX(10deg);
             text-shadow: 
-                0 10px 20px rgba(157, 78, 221, 0.4),
-                0 0 40px rgba(255, 109, 145, 0.3);
+                0 0 30px var(--neon-pink),
+                0 0 60px var(--neon-pink),
+                0 0 90px var(--neon-pink);
+            animation: letterGlow 0.6s ease-out;
         }
 
-        /* Обновлённые кнопки */
+        @keyframes letterGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(255, 77, 184, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(255, 77, 184, 0.8)); }
+            100% { filter: drop-shadow(0 0 20px rgba(255, 77, 184, 0.5)); }
+        }
+
+        /* Обновлённые кнопки с неоном */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0.8rem 1.8rem;
+            padding: 0.9rem 2.2rem;
             border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
             text-decoration: none;
             transition: var(--transition);
             border: 1px solid transparent;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            box-shadow: 0 10px 30px rgba(157, 78, 221, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(157, 78, 221, 0.5);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--card-border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-            border-color: var(--accent-primary);
-        }
-
-        /* Карточки услуг */
-        .service-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 1.8rem;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             position: relative;
             overflow: hidden;
         }
 
-        .service-card::before {
+        .btn::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: left 0.7s ease;
         }
 
-        .service-card:hover::before {
+        .btn:hover::before {
             left: 100%;
         }
 
-        .service-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 
+                0 10px 30px rgba(255, 77, 184, 0.4),
+                0 0 40px rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Анимации появления */
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 45px rgba(255, 77, 184, 0.6),
+                0 0 60px rgba(139, 92, 246, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 30, 60, 0.6);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(40, 40, 80, 0.8);
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 
+                0 10px 30px rgba(255, 77, 184, 0.3),
+                0 0 40px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Карточки услуг с неоном */
+        .service-card {
+            background: linear-gradient(145deg, rgba(30, 30, 60, 0.5), rgba(20, 20, 40, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: var(--transition);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--accent-primary);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(255, 77, 184, 0.2),
+                inset 0 0 40px rgba(255, 255, 255, 0.05);
+        }
+
+        .service-card:hover::after {
+            opacity: 1;
+        }
+
+        /* 3D эффект для заголовков услуг */
+        .service-card h3 {
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .service-card:hover h3 {
+            transform: rotateX(5deg) rotateY(5deg) translateZ(20px);
+            text-shadow: 
+                0 5px 15px rgba(255, 77, 184, 0.4),
+                0 0 30px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Анимации при скролле */
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(50px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .fade-up {
-            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+            animation: fadeUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        /* Портфолио без изображений */
-        .portfolio-item {
-            aspect-ratio: 16/9;
-            background: linear-gradient(135deg, 
-                rgba(157, 78, 221, 0.1), 
-                rgba(255, 109, 145, 0.1));
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .portfolio-item::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(92, 225, 230, 0.1), transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(157, 78, 221, 0.1), transparent 50%);
-        }
-
-        .portfolio-item:hover {
-            transform: scale(1.02);
-            border-color: var(--accent-primary);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                inset 0 0 100px rgba(157, 78, 221, 0.1);
+        /* Лепестки сакуры */
+        #sakuraCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
         }
 
         /* Адаптивность */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: clamp(2.5rem, 12vw, 4rem);
+                font-size: clamp(2.8rem, 14vw, 5rem);
             }
             
             .btn {
-                padding: 0.7rem 1.5rem;
-                font-size: 0.9rem;
+                padding: 0.8rem 1.8rem;
+                font-size: 0.95rem;
+            }
+            
+            .service-card {
+                padding: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Плавающие частицы -->
+    <!-- Плавающие частицы фона -->
     <div class="floating-particles" id="particles"></div>
+    
+    <!-- Canvas для лепестков сакуры -->
+    <canvas id="sakuraCanvas"></canvas>
 
     <!-- Хедер -->
-    <header style="position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.5rem; backdrop-filter: blur(20px); background: rgba(10, 10, 20, 0.8); border-bottom: 1px solid var(--card-border);">
+    <header style="position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1.5rem; backdrop-filter: blur(25px); background: rgba(10, 10, 20, 0.85); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
         <nav style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-size: 1.2rem; font-weight: 600; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <div style="font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 Actibilis
             </div>
-            <div style="display: flex; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <a href="#services" class="btn btn-secondary">Услуги</a>
                 <a href="#contact" class="btn btn-primary">Заказать</a>
             </div>
@@ -242,15 +291,15 @@
 
     <!-- Герой с интерактивным названием -->
     <section style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; position: relative; z-index: 2;">
-        <div style="text-align: center; max-width: 800px;">
+        <div style="text-align: center; max-width: 900px;">
             <div class="hero-title" id="interactiveTitle">
                 <!-- Буквы добавятся через JavaScript -->
             </div>
-            <p style="font-size: 1.2rem; color: var(--text-secondary); margin: 2rem 0 3rem; line-height: 1.6;">
-                3D-печать • Фотопечать • Лазерная гравировка • IT-услуги<br>
-                <span style="color: var(--accent-tertiary);">Качество, которое чувствуется</span>
+            <p style="font-size: 1.3rem; color: var(--text-secondary); margin: 2rem 0 4rem; line-height: 1.6; max-width: 700px;">
+                Профессиональные услуги 3D-печати, фотопечати, лазерной гравировки и IT-услуг<br>
+                <span style="color: var(--accent-tertiary); font-weight: 600;">Ваш результат — наша ответственность</span>
             </p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
                 <a href="#services" class="btn btn-primary">Смотреть услуги</a>
                 <a href="#contact" class="btn btn-secondary">Связаться с нами</a>
             </div>
@@ -258,78 +307,125 @@
     </section>
 
     <!-- Услуги -->
-    <section id="services" style="padding: 5rem 2rem; max-width: 1200px; margin: 0 auto;">
-        <h2 style="font-size: 2.5rem; margin-bottom: 3rem; text-align: center;">Наши услуги</h2>
+    <section id="services" style="padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; position: relative;">
+        <h2 style="font-size: 3rem; margin-bottom: 4rem; text-align: center; background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Наши услуги
+        </h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem;">
             <!-- Печать и документы -->
-            <div class="service-card fade-up">
-                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">
+            <div class="service-card fade-up" style="animation-delay: 0.1s;">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.8rem; font-size: 1.8rem; box-shadow: 0 10px 25px rgba(255, 77, 184, 0.3);">
                     🖨️
                 </div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">Печать и документы</h3>
-                <div style="color: var(--text-secondary); line-height: 1.6;">
-                    <p style="margin: 0.5rem 0;"><strong>Фото на документы (3×4, 4 шт.)</strong> — 300 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Ксерокопия ч/б</strong> — 10 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Ксерокопия цветная</strong> — 20 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Ламинация А4</strong> — 70 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Набор текста (А4)</strong> — 60 ₽</p>
+                <h3 style="margin-bottom: 1.2rem; font-size: 1.5rem; font-weight: 700;">Печать и документы</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Фото на документы (3×4, 4 шт.)</span>
+                        <strong style="color: var(--accent-primary);">300 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Ксерокопия ч/б</span>
+                        <strong style="color: var(--accent-primary);">10 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Ксерокопия цветная</span>
+                        <strong style="color: var(--accent-primary);">20 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Ламинация А4</span>
+                        <strong style="color: var(--accent-primary);">70 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Набор текста (А4)</span>
+                        <strong style="color: var(--accent-primary);">60 ₽</strong>
+                    </p>
                 </div>
             </div>
 
             <!-- 3D и гравировка -->
-            <div class="service-card fade-up" style="animation-delay: 0.1s;">
-                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">
+            <div class="service-card fade-up" style="animation-delay: 0.2s;">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary)); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.8rem; font-size: 1.8rem; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);">
                     🔨
                 </div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">3D-печать и гравировка</h3>
-                <div style="color: var(--text-secondary); line-height: 1.6;">
-                    <p style="margin: 0.5rem 0;"><strong>3D-печать</strong> — от 13 ₽/грамм</p>
-                    <p style="margin: 0.5rem 0;"><strong>Гравировка фото на дереве</strong> — от 300 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Арт-постеры</strong> — от 50 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Закладки в книги</strong> — 25 ₽/шт</p>
+                <h3 style="margin-bottom: 1.2rem; font-size: 1.5rem; font-weight: 700;">3D-печать и гравировка</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>3D-печать</span>
+                        <strong style="color: var(--accent-primary);">от 13 ₽/г</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Гравировка фото на дереве</span>
+                        <strong style="color: var(--accent-primary);">от 300 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Арт-постеры</span>
+                        <strong style="color: var(--accent-primary);">от 50 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Закладки в книги</span>
+                        <strong style="color: var(--accent-primary);">25 ₽/шт</strong>
+                    </p>
                 </div>
             </div>
 
             <!-- IT-услуги -->
-            <div class="service-card fade-up" style="animation-delay: 0.2s;">
-                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-tertiary), var(--accent-primary)); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">
+            <div class="service-card fade-up" style="animation-delay: 0.3s;">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-tertiary), var(--accent-primary)); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.8rem; font-size: 1.8rem; box-shadow: 0 10px 25px rgba(0, 229, 255, 0.3);">
                     💻
                 </div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">IT-услуги</h3>
-                <div style="color: var(--text-secondary); line-height: 1.6;">
-                    <p style="margin: 0.5rem 0;"><strong>Установка Windows</strong> — 1500 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Настройка / чистка Windows</strong> — 300-400 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Установка программ</strong> — от 500 ₽</p>
-                    <p style="margin: 0.5rem 0;"><strong>Восстановление фото</strong> — от 250 ₽</p>
+                <h3 style="margin-bottom: 1.2rem; font-size: 1.5rem; font-weight: 700;">IT-услуги</h3>
+                <div style="color: var(--text-secondary); line-height: 1.7;">
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Установка Windows</span>
+                        <strong style="color: var(--accent-primary);">1500 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Настройка / чистка Windows</span>
+                        <strong style="color: var(--accent-primary);">300-400 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Установка программ</span>
+                        <strong style="color: var(--accent-primary);">от 500 ₽</strong>
+                    </p>
+                    <p style="margin: 0.6rem 0; display: flex; justify-content: space-between;">
+                        <span>Восстановление фото</span>
+                        <strong style="color: var(--accent-primary);">от 250 ₽</strong>
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Контакты -->
-    <section id="contact" style="padding: 5rem 2rem; background: var(--bg-secondary);">
+    <section id="contact" style="padding: 6rem 2rem; background: var(--bg-secondary); position: relative;">
         <div style="max-width: 1200px; margin: 0 auto;">
-            <h2 style="font-size: 2.5rem; margin-bottom: 3rem; text-align: center;">Контакты</h2>
+            <h2 style="font-size: 3rem; margin-bottom: 4rem; text-align: center; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Контакты
+            </h2>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 4rem;">
                 <div>
-                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary);">Наш адрес</h3>
-                    <div style="color: var(--text-secondary); line-height: 1.8;">
-                        <p>Республика Дагестан</p>
-                        <p>Каякентский район, село Первомайское</p>
-                        <p>Улица Пионерская, дом 60</p>
-                        <p style="margin-top: 1.5rem; color: var(--accent-tertiary);">🕒 Ежедневно 10:00 - 19:00</p>
+                    <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem;">Наш адрес</h3>
+                    <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.1rem;">
+                        <p style="margin-bottom: 1rem;">📍 Республика Дагестан</p>
+                        <p style="margin-bottom: 1rem;">Каякентский район, село Первомайское</p>
+                        <p style="margin-bottom: 1rem;">Улица Пионерская, дом 60</p>
+                        <p style="margin-top: 2rem; color: var(--accent-tertiary); font-weight: 600;">
+                            🕒 Ежедневно 10:00 - 19:00
+                        </p>
                     </div>
                     
-                    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                        <button class="btn btn-primary" onclick="copyContact()">Скопировать контакт</button>
+                    <div style="margin-top: 3rem; display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="copyContact()">
+                            📋 Скопировать контакт
+                        </button>
                     </div>
                 </div>
 
                 <div>
-                    <h3 style="margin-bottom: 1.5rem; color: var(--accent-primary);">Форма заказа</h3>
-                    <div style="border-radius: 20px; overflow: hidden; border: 1px solid var(--card-border); height: 500px;">
+                    <h3 style="margin-bottom: 2rem; color: var(--accent-primary); font-size: 1.8rem;">Форма заказа</h3>
+                    <div style="border-radius: 24px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); height: 550px; background: rgba(20, 20, 40, 0.4); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);">
                         <iframe 
                             src="https://forms.yandex.ru/u/69529a061f1eb554426a9176" 
                             style="width: 100%; height: 100%; border: none;"
@@ -342,48 +438,47 @@
     </section>
 
     <!-- Футер -->
-    <footer style="padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--card-border);">
+    <footer style="padding: 4rem 2rem; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); position: relative;">
         <div style="max-width: 1200px; margin: 0 auto;">
-            <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <div style="font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 Actibilis
             </div>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                Салон цифровых услуг — качество в каждой детали
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Профессиональные цифровые услуги — от печати документов до сложных IT-решений
             </p>
-            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            <p style="color: var(--text-secondary); font-size: 0.95rem; opacity: 0.7;">
                 © 2024 Actibilis. Все права защищены.
             </p>
         </div>
     </footer>
 
     <script>
-        // Создание плавающих частиц
+        // Создание плавающих частиц фона
         function createParticles() {
             const container = document.getElementById('particles');
-            const particleCount = 50;
+            const particleCount = 60;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
-                // Случайный размер и позиция
-                const size = Math.random() * 6 + 2;
+                const size = Math.random() * 8 + 3;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}vw`;
                 particle.style.top = `${Math.random() * 100}vh`;
                 
-                // Случайный цвет
                 const colors = [
                     'var(--accent-primary)',
                     'var(--accent-secondary)',
-                    'var(--accent-tertiary)'
+                    'var(--accent-tertiary)',
+                    '#ffffff'
                 ];
                 particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
                 
-                // Случайная анимация
-                const duration = Math.random() * 20 + 10;
-                const delay = Math.random() * 5;
+                const duration = Math.random() * 25 + 15;
+                const delay = Math.random() * 10;
                 particle.style.animationDuration = `${duration}s`;
                 particle.style.animationDelay = `${delay}s`;
                 
@@ -396,38 +491,215 @@
             const title = document.getElementById('interactiveTitle');
             const word = 'Actibilis';
             
-            // Очищаем и создаём буквы
             title.innerHTML = '';
             
             for (let i = 0; i < word.length; i++) {
                 const letter = document.createElement('span');
                 letter.className = 'letter';
                 letter.textContent = word[i];
-                letter.style.animationDelay = `${i * 0.05}s`;
+                letter.style.animationDelay = `${i * 0.1}s`;
                 
-                // Эффект при наведении
-                letter.addEventListener('mouseenter', () => {
-                    letter.style.transform = 'translateY(-15px) scale(1.3)';
-                    letter.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                letter.addEventListener('mouseenter', (e) => {
+                    const rect = letter.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    letter.style.transform = `
+                        translateY(-20px) 
+                        scale(1.4) 
+                        rotateX(${20 - (y / rect.height) * 40}deg)
+                        rotateY(${20 - (x / rect.width) * 40}deg)
+                    `;
+                    
+                    letter.style.textShadow = `
+                        0 0 40px var(--neon-pink),
+                        0 0 80px var(--neon-pink),
+                        0 0 120px var(--neon-pink)
+                    `;
                 });
                 
                 letter.addEventListener('mouseleave', () => {
-                    letter.style.transform = 'translateY(0) scale(1)';
-                    setTimeout(() => {
-                        letter.style.transition = 'var(--transition)';
-                    }, 300);
+                    letter.style.transform = 'translateY(0) scale(1) rotateX(0) rotateY(0)';
+                    letter.style.textShadow = 'none';
                 });
                 
                 title.appendChild(letter);
             }
         }
 
-        // Анимация появления при скролле
+        // Лепестки сакуры на Canvas
+        class SakuraPetal {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.reset();
+            }
+
+            reset() {
+                // Начинаем с правого верхнего угла
+                this.x = this.canvas.width + 50;
+                this.y = -50;
+                
+                // Случайная скорость
+                this.vx = -(Math.random() * 3 + 1);
+                this.vy = Math.random() * 2 + 1;
+                
+                // Размер и вращение
+                this.size = Math.random() * 8 + 4;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+                
+                // Цвет
+                const hue = Math.random() * 20 + 320;
+                this.color = `hsla(${hue}, 80%, 70%, ${Math.random() * 0.6 + 0.4})`;
+                
+                // Время жизни
+                this.life = 1;
+                this.decay = Math.random() * 0.002 + 0.001;
+                
+                // Прилипание
+                this.stuck = false;
+                this.stuckTo = null;
+                this.stuckX = 0;
+                this.stuckY = 0;
+                this.stuckTime = 0;
+            }
+
+            update(elements) {
+                if (this.stuck) {
+                    this.stuckTime++;
+                    this.life -= this.decay * 2;
+                    return this.life > 0;
+                }
+
+                // Движение
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+                
+                // Легкое колебание
+                this.vx += (Math.random() - 0.5) * 0.2;
+                this.vy += (Math.random() - 0.5) * 0.1;
+                
+                // Проверка столкновений с элементами
+                if (!this.stuck && Math.random() < 0.01) {
+                    for (const element of elements) {
+                        const rect = element.getBoundingClientRect();
+                        if (this.x >= rect.left && this.x <= rect.right &&
+                            this.y >= rect.top && this.y <= rect.bottom) {
+                            
+                            this.stuck = true;
+                            this.stuckTo = element;
+                            this.stuckX = this.x - rect.left;
+                            this.stuckY = this.y - rect.top;
+                            break;
+                        }
+                    }
+                }
+                
+                // Уменьшение жизни
+                this.life -= this.decay;
+                
+                // Сброс, если улетел за экран
+                if (this.x < -100 || this.y > this.canvas.height + 100) {
+                    return false;
+                }
+                
+                return this.life > 0;
+            }
+
+            draw() {
+                if (this.stuck && this.stuckTo) {
+                    const rect = this.stuckTo.getBoundingClientRect();
+                    this.x = rect.left + this.stuckX;
+                    this.y = rect.top + this.stuckY;
+                }
+
+                this.ctx.save();
+                this.ctx.translate(this.x, this.y);
+                this.ctx.rotate(this.rotation);
+                this.ctx.fillStyle = this.color;
+                
+                // Рисуем лепесток (простую форму)
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, 0);
+                this.ctx.bezierCurveTo(
+                    this.size * 2, -this.size,
+                    this.size, this.size * 2,
+                    0, this.size
+                );
+                this.ctx.bezierCurveTo(
+                    -this.size, this.size * 2,
+                    -this.size * 2, -this.size,
+                    0, 0
+                );
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            }
+        }
+
+        // Система лепестков сакуры
+        class SakuraSystem {
+            constructor() {
+                this.canvas = document.getElementById('sakuraCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.petals = [];
+                this.maxPetals = 80;
+                this.lastTime = 0;
+                
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                
+                // Элементы для прилипания
+                this.stickElements = Array.from(document.querySelectorAll('.btn, .service-card, .hero-title'));
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            createPetal() {
+                if (this.petals.length < this.maxPetals) {
+                    this.petals.push(new SakuraPetal(this.canvas));
+                }
+            }
+
+            update(currentTime) {
+                const delta = currentTime - this.lastTime;
+                this.lastTime = currentTime;
+                
+                // Создаем новые лепестки
+                if (delta > 100 && Math.random() < 0.3) {
+                    this.createPetal();
+                }
+                
+                // Обновляем существующие
+                this.petals = this.petals.filter(petal => 
+                    petal.update(this.stickElements)
+                );
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.petals.forEach(petal => petal.draw());
+            }
+
+            animate(time) {
+                this.update(time);
+                this.draw();
+                requestAnimationFrame((t) => this.animate(t));
+            }
+        }
+
+        // Анимации при скролле
         function initScrollAnimations() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('fade-up');
+                        observer.unobserve(entry.target);
                     }
                 });
             }, {
@@ -435,38 +707,53 @@
                 rootMargin: '0px 0px -100px 0px'
             });
             
-            document.querySelectorAll('.service-card').forEach(card => {
-                observer.observe(card);
+            // Наблюдаем за всеми элементами с анимацией
+            document.querySelectorAll('.service-card, .fade-up').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Параллакс эффект для фона
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.floating-particles');
+                parallax.style.transform = `translateY(${scrolled * 0.05}px)`;
             });
         }
 
         // Копирование контакта
         function copyContact() {
-            const contactInfo = `Actibilis\nРеспублика Дагестан, Каякентский район, село Первомайское\nУлица Пионерская, дом 60\nЕжедневно 10:00-19:00`;
+            const contactInfo = `Actibilis\nРеспублика Дагестан, Каякентский район\nСело Первомайское, улица Пионерская, дом 60\nЕжедневно 10:00-19:00`;
             
             navigator.clipboard.writeText(contactInfo).then(() => {
-                // Создаём уведомление
-                const notification = document.createElement('div');
-                notification.textContent = 'Контакт скопирован!';
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-                    color: white;
-                    padding: 1rem 1.5rem;
-                    border-radius: 10px;
-                    z-index: 10000;
-                    animation: slideIn 0.3s ease;
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease forwards';
-                    setTimeout(() => notification.remove(), 300);
-                }, 2000);
+                showNotification('📋 Контакт скопирован в буфер!');
             });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 30px;
+                right: 30px;
+                background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+                color: white;
+                padding: 1.2rem 2rem;
+                border-radius: 15px;
+                z-index: 10000;
+                animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
         }
 
         // Инициализация при загрузке
@@ -474,6 +761,10 @@
             createParticles();
             createInteractiveTitle();
             initScrollAnimations();
+            
+            // Запускаем систему лепестков
+            const sakura = new SakuraSystem();
+            requestAnimationFrame((t) => sakura.animate(t));
             
             // Добавляем стили для уведомлений
             const style = document.createElement('style');
