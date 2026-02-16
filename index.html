@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>AI Чат с LM Studio</title>
+    <title>Локальный AI Чат (LM Studio + Pinggy)</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-
         .header {
             background: #2c3e50;
             color: white;
@@ -29,380 +23,282 @@
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             flex-shrink: 0;
-        }
-
-        .header h1 {
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        .model-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
             flex-wrap: wrap;
+            gap: 10px;
         }
-
-        .model-input {
+        .header h1 { font-size: 1.2rem; font-weight: 500; }
+        .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .select-chat, .model-input, .api-key-input {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.3);
             color: white;
             padding: 6px 10px;
             border-radius: 20px;
             font-size: 0.9rem;
-            width: 150px;
         }
-
-        .model-input::placeholder {
-            color: rgba(255,255,255,0.7);
+        .select-chat { width: 160px; }
+        .model-input { width: 140px; }
+        .api-key-input { width: 260px; }
+        .btn { 
+            background: white; border: none; color: #2c3e50; padding: 6px 14px;
+            border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
         }
-
-        .btn {
-            background: white;
-            border: none;
-            color: #2c3e50;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            white-space: nowrap;
-        }
-
-        .btn:hover {
-            background: #f0f0f0;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
+        .btn:hover { background: #f0f0f0; }
         .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #e5ddd5;
+            flex: 1; overflow-y: auto; padding: 16px; display: flex;
+            flex-direction: column; gap: 12px; background: #e5ddd5;
         }
-
         .message {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            word-wrap: break-word;
-            line-height: 1.4;
-            font-size: 1rem;
-            position: relative;
-            animation: fadeIn 0.2s ease;
+            max-width: 85%; padding: 10px 14px; border-radius: 18px;
+            word-wrap: break-word; line-height: 1.4; font-size: 1rem;
+            position: relative; animation: fadeIn 0.2s ease;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background: #dcf8c6;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-message {
-            align-self: flex-start;
-            background: white;
-            border-bottom-left-radius: 4px;
-        }
-
-        .error-message {
-            align-self: center;
-            background: #ffebee;
-            color: #c62828;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            max-width: 90%;
-            text-align: center;
-        }
-
-        .timestamp {
-            font-size: 0.7rem;
-            color: #888;
-            margin-top: 4px;
-            text-align: right;
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .user-message { align-self: flex-end; background: #dcf8c6; border-bottom-right-radius: 4px; }
+        .ai-message { align-self: flex-start; background: white; border-bottom-left-radius: 4px; }
+        .error-message { align-self: center; background: #ffebee; color: #c62828; border-radius: 12px; font-size: 0.9rem; text-align: center; }
+        .timestamp { font-size: 0.7rem; color: #888; margin-top: 4px; text-align: right; }
         .input-area {
-            background: white;
-            padding: 10px 12px;
-            display: flex;
-            gap: 8px;
-            border-top: 1px solid #ddd;
-            flex-shrink: 0;
-            align-items: flex-end;
+            background: white; padding: 10px 12px; display: flex; gap: 8px;
+            border-top: 1px solid #ddd; flex-shrink: 0; align-items: flex-end;
         }
-
         textarea {
-            flex: 1;
-            border: 1px solid #ccc;
-            border-radius: 24px;
-            padding: 12px 16px;
-            font-size: 1rem;
-            resize: none;
-            max-height: 120px;
-            outline: none;
-            font-family: inherit;
-            background: #fafafa;
+            flex: 1; border: 1px solid #ccc; border-radius: 24px; padding: 12px 16px;
+            font-size: 1rem; resize: none; max-height: 120px; outline: none; background: #fafafa;
         }
-
-        textarea:focus {
-            border-color: #2c3e50;
-        }
-
+        textarea:focus { border-color: #2c3e50; }
         .send-btn {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            font-size: 1.4rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            flex-shrink: 0;
+            background: #2c3e50; color: white; border: none; border-radius: 50%;
+            width: 48px; height: 48px; font-size: 1.4rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-
-        .send-btn:active {
-            background: #1a252f;
-            transform: scale(0.95);
-        }
-
-        .send-btn:disabled {
-            background: #b0bec5;
-            cursor: not-allowed;
-        }
-
-        .status {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
-            padding: 4px;
-        }
-
-        /* Адаптация для очень маленьких экранов */
+        .send-btn:disabled { background: #b0bec5; cursor: not-allowed; }
+        .status { font-size: 0.8rem; color: #666; text-align: center; padding: 4px; }
         @media (max-width: 480px) {
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-            .model-controls {
-                justify-content: space-between;
-            }
-            .model-input {
-                width: 120px;
-            }
-            .message {
-                max-width: 90%;
-            }
+            .header { flex-direction: column; gap: 8px; }
+            .controls { justify-content: space-between; width: 100%; }
+            .api-key-input { width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🤖 Локальный AI (LM Studio)</h1>
-        <div class="model-controls">
+        <h1>🤖 Локальный AI (Pinggy + LM Studio)</h1>
+        <div class="controls">
+            <select id="chatSelect" class="select-chat">
+                <option value="">Выберите чат...</option>
+            </select>
+            <button class="btn" id="newChatBtn">+ Новый чат</button>
             <input type="text" id="modelName" class="model-input" placeholder="Модель" value="local-model">
-            <button class="btn" id="newChatBtn">➕ Новый диалог</button>
+            <input type="text" id="apiKey" class="api-key-input" placeholder="API Key (LM Studio)" value="sk-lm-hhTsuHgi:McBjzMim30tt6KOp8O1o">
         </div>
     </div>
-
-    <div id="chatContainer" class="chat-container">
-        <!-- Сюда будут добавляться сообщения -->
-    </div>
-
+    <div id="chatContainer" class="chat-container"></div>
     <div class="input-area">
         <textarea id="userInput" placeholder="Введите сообщение..." rows="1"></textarea>
-        <button class="send-btn" id="sendBtn" title="Отправить">➤</button>
+        <button class="send-btn" id="sendBtn" title="Отправить" disabled>➤</button>
     </div>
-
-    <div id="statusMessage" class="status"></div>
+    <div id="statusMessage" class="status">Загрузка чатов...</div>
 
     <script>
         (function() {
             // Конфигурация
-            const API_BASE = 'http://192.168.1.212:1234/v1';  // ваш локальный адрес
+            const API_BASE = 'https://ugeen-185-59-246-10.a.free.pinggy.link/v1';  // твой текущий Pinggy туннель
+            const STORAGE_KEY = 'ai_chats_v2';  // обновлённый ключ, чтобы не конфликтовать со старыми данными
 
             // Элементы DOM
+            const chatSelect = document.getElementById('chatSelect');
+            const newChatBtn = document.getElementById('newChatBtn');
             const chatContainer = document.getElementById('chatContainer');
             const userInput = document.getElementById('userInput');
             const sendBtn = document.getElementById('sendBtn');
-            const newChatBtn = document.getElementById('newChatBtn');
             const modelInput = document.getElementById('modelName');
+            const apiKeyInput = document.getElementById('apiKey');
             const statusDiv = document.getElementById('statusMessage');
 
-            // Состояние чата
-            let messages = [];  // массив объектов { role: 'user'/'assistant', content: '...' }
-            let isWaiting = false;  // флаг ожидания ответа от AI
+            // Состояние
+            let chats = {};          // { chatId: { title: "...", messages: [...] } }
+            let currentChatId = null;
+            let isWaiting = false;
 
-            // Автоматическое изменение высоты textarea
-            userInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-            });
-
-            // Функция добавления сообщения в интерфейс
-            function addMessageToUI(role, content, isError = false) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                if (role === 'user') {
-                    messageDiv.classList.add('user-message');
-                } else if (role === 'assistant') {
-                    messageDiv.classList.add('ai-message');
-                } else if (isError) {
-                    messageDiv.classList.add('error-message');
+            // Загрузка сохранённых чатов
+            function loadChats() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try {
+                        chats = JSON.parse(saved);
+                    } catch (e) {
+                        console.warn("Повреждённые данные в localStorage, начинаем заново");
+                        chats = {};
+                    }
                 }
+                updateChatSelect();
+                statusDiv.textContent = '';
 
-                // Текст сообщения
-                const textDiv = document.createElement('div');
-                textDiv.textContent = content;
-                messageDiv.appendChild(textDiv);
+                if (Object.keys(chats).length > 0) {
+                    const ids = Object.keys(chats);
+                    switchChat(ids[ids.length - 1]);  // последний чат
+                } else {
+                    createNewChat();  // если ничего нет — создаём первый
+                }
+            }
 
-                // Время (опционально)
-                const timeSpan = document.createElement('div');
-                timeSpan.classList.add('timestamp');
-                timeSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                messageDiv.appendChild(timeSpan);
+            // Сохранение
+            function saveChats() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+            }
 
-                chatContainer.appendChild(messageDiv);
-                // Прокрутка вниз
+            // Обновление списка чатов
+            function updateChatSelect() {
+                chatSelect.innerHTML = '<option value="">Выберите чат...</option>';
+                Object.keys(chats).forEach(id => {
+                    const opt = document.createElement('option');
+                    opt.value = id;
+                    opt.textContent = chats[id].title || `Чат ${id.slice(0,8)}`;
+                    chatSelect.appendChild(opt);
+                });
+            }
+
+            // Переключение на другой чат
+            function switchChat(chatId) {
+                if (!chats[chatId]) return;
+                currentChatId = chatId;
+                chatSelect.value = chatId;
+                renderMessages(chats[chatId].messages);
+                userInput.focus();
+                statusDiv.textContent = `Открыт: ${chats[chatId].title || 'Без названия'}`;
+            }
+
+            // Отрисовка сообщений
+            function renderMessages(messages) {
+                chatContainer.innerHTML = '';
+                messages.forEach(msg => {
+                    addMessageToUI(msg.role, msg.content, msg.role === 'system' && msg.isError);
+                });
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
-            // Очистка всех сообщений в интерфейсе
-            function clearChatUI() {
-                chatContainer.innerHTML = '';
+            function addMessageToUI(role, content, isError = false) {
+                const div = document.createElement('div');
+                div.classList.add('message');
+                if (role === 'user') div.classList.add('user-message');
+                else if (role === 'assistant') div.classList.add('ai-message');
+                else if (isError) div.classList.add('error-message');
+
+                const text = document.createElement('div');
+                text.textContent = content;
+                div.appendChild(text);
+
+                const time = document.createElement('div');
+                time.classList.add('timestamp');
+                time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                div.appendChild(time);
+
+                chatContainer.appendChild(div);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
-            // Отображение статуса (например, "AI печатает...")
-            function setStatus(text, isError = false) {
-                statusDiv.textContent = text;
-                statusDiv.style.color = isError ? '#c62828' : '#666';
+            // Новый чат
+            function createNewChat() {
+                const id = Date.now().toString();
+                const title = prompt('Название нового чата (можно пропустить):') || `Чат ${new Date().toLocaleDateString()}`;
+                chats[id] = { title, messages: [] };
+                saveChats();
+                updateChatSelect();
+                switchChat(id);
+                addMessageToUI('system', 'Новый диалог начат. Пиши!', false);
+                chats[id].messages.push({ role: 'system', content: 'Новый диалог начат.' });
+                saveChats();
             }
 
-            // Отправка запроса к API
-            async function sendRequest(userMessageContent) {
-                if (isWaiting) return;
+            // Отправка запроса
+            async function sendRequest() {
+                if (isWaiting || !currentChatId) return;
+                const text = userInput.value.trim();
+                if (!text) return;
 
-                // Добавляем сообщение пользователя в историю
-                messages.push({ role: 'user', content: userMessageContent });
-                addMessageToUI('user', userMessageContent);
+                const currentChat = chats[currentChatId];
+                currentChat.messages.push({ role: 'user', content: text });
+                addMessageToUI('user', text);
+                saveChats();
 
-                // Очищаем поле ввода и сбрасываем высоту
                 userInput.value = '';
                 userInput.style.height = 'auto';
-                userInput.focus();
-
-                // Блокируем кнопку и показываем статус
                 isWaiting = true;
                 sendBtn.disabled = true;
-                setStatus('AI печатает...');
-
-                // Подготовка тела запроса
-                const model = modelInput.value.trim() || 'local-model';
-                const requestBody = {
-                    model: model,
-                    messages: messages,  // отправляем всю историю
-                    temperature: 0.7,
-                    max_tokens: 2000,
-                    stream: false
-                };
+                statusDiv.textContent = 'AI думает...';
 
                 try {
-                    const response = await fetch(`${API_BASE}/chat/completions`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Ошибка ${response.status}: ${errorText}`);
+                    const headers = { 'Content-Type': 'application/json' };
+                    const key = apiKeyInput.value.trim();
+                    if (key) {
+                        headers['Authorization'] = `Bearer ${key}`;
                     }
 
-                    const data = await response.json();
-                    const aiContent = data.choices[0].message.content;
+                    const res = await fetch(`${API_BASE}/chat/completions`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            model: modelInput.value.trim() || 'local-model',
+                            messages: currentChat.messages,
+                            temperature: 0.7,
+                            max_tokens: 2000,
+                            stream: false
+                        })
+                    });
 
-                    // Добавляем ответ AI в историю
-                    messages.push({ role: 'assistant', content: aiContent });
-                    addMessageToUI('assistant', aiContent);
+                    if (!res.ok) {
+                        let errMsg = `Ошибка ${res.status}`;
+                        if (res.status === 401 || res.status === 403) {
+                            errMsg += ': Неверный API Key или Basic Auth Pinggy';
+                        }
+                        const errText = await res.text().catch(() => '');
+                        throw new Error(errMsg + (errText ? `: ${errText}` : ''));
+                    }
 
-                } catch (error) {
-                    console.error('Ошибка запроса:', error);
-                    setStatus('Ошибка соединения с LM Studio. Проверьте сервер и CORS.', true);
-                    // Можно показать сообщение об ошибке в чате
-                    addMessageToUI('system', '❌ Не удалось получить ответ. Убедитесь, что LM Studio запущена и доступна по адресу http://192.168.1.212:1234, а также включена опция CORS.', true);
+                    const data = await res.json();
+                    const aiText = data.choices[0].message.content.trim();
+                    currentChat.messages.push({ role: 'assistant', content: aiText });
+                    addMessageToUI('assistant', aiText);
+                    saveChats();
+                } catch (err) {
+                    console.error(err);
+                    const msg = err.message.includes('Failed to fetch') 
+                        ? 'Нет соединения. Проверь, запущен ли туннель Pinggy и LM Studio.'
+                        : err.message;
+                    addMessageToUI('system', `❌ ${msg}`, true);
+                    statusDiv.textContent = 'Ошибка';
                 } finally {
                     isWaiting = false;
                     sendBtn.disabled = false;
-                    setStatus(''); // очищаем статус
+                    statusDiv.textContent = '';
                 }
             }
 
-            // Обработчик отправки сообщения
-            function handleSend() {
-                const text = userInput.value.trim();
-                if (!text || isWaiting) return;
-                sendRequest(text);
-            }
+            // Авто-высота поля ввода
+            userInput.addEventListener('input', () => {
+                userInput.style.height = 'auto';
+                userInput.style.height = userInput.scrollHeight + 'px';
+            });
 
-            // Отправка по нажатию Enter (Shift+Enter для новой строки)
-            userInput.addEventListener('keydown', (e) => {
+            // Enter = отправка
+            userInput.addEventListener('keydown', e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault(); // предотвращаем переход на новую строку
-                    handleSend();
+                    e.preventDefault();
+                    sendRequest();
                 }
             });
 
-            sendBtn.addEventListener('click', handleSend);
-
-            // Новая беседа (сброс истории)
-            newChatBtn.addEventListener('click', () => {
-                messages = [];  // очищаем историю
-                clearChatUI();
-                setStatus('Новый диалог начат');
-                userInput.focus();
+            sendBtn.addEventListener('click', sendRequest);
+            newChatBtn.addEventListener('click', createNewChat);
+            chatSelect.addEventListener('change', e => {
+                if (e.target.value) switchChat(e.target.value);
             });
 
-            // Приветственное сообщение при загрузке
-            window.addEventListener('load', () => {
-                // Можно попробовать получить список моделей для автозаполнения (опционально)
-                fetch(`${API_BASE}/models`, { method: 'GET' })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.data && data.data.length > 0) {
-                            const firstModel = data.data[0].id;
-                            modelInput.value = firstModel;
-                            setStatus(`Модель "${firstModel}" загружена`);
-                        }
-                    })
-                    .catch(() => {
-                        // Не удалось получить модели, оставляем как есть
-                        setStatus('Не удалось получить список моделей, используйте поле ввода', true);
-                    });
-
-                // Добавляем приветствие от системы
-                addMessageToUI('system', 'Добро пожаловать! Напишите что-нибудь, чтобы начать диалог. Контекст сохраняется.', false);
-                messages.push({ role: 'system', content: 'Добро пожаловать! Напишите что-нибудь, чтобы начать диалог. Контекст сохраняется.' }); // не обязательно, но для красоты
-            });
+            // Старт
+            loadChats();
+            sendBtn.disabled = false;
+            userInput.focus();
         })();
     </script>
 </body>
